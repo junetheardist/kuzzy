@@ -1,0 +1,250 @@
+﻿🧩 Kuzi Database Schema
+1. Users Table
+Field
+	Type
+	Description
+	id
+	UUID / INT
+	Primary key
+	name
+	STRING
+	Name of user (customer or rider)
+	phone_number
+	STRING
+	Phone number (used for WhatsApp/SMS)
+	email
+	STRING
+	Optional
+	user_type
+	ENUM
+	'customer', 'rider', 'admin'
+	address
+	TEXT
+	Optional saved address
+	auth_token
+	STRING
+	For session/login handling
+	created_at
+	DATETIME
+	Timestamp
+	
+
+2. Vendors Table
+Field
+	Type
+	Description
+	id
+	UUID / INT
+	Primary key
+	name
+	STRING
+	Internal-use name only
+	phone_number
+	STRING
+	For communication via WhatsApp/SMS
+	address
+	TEXT
+	Location (used for proximity checks)
+	is_active
+	BOOLEAN
+	Can be contacted or not
+	created_at
+	DATETIME
+	Timestamp
+	
+
+3. Products Table
+Field
+	Type
+	Description
+	id
+	UUID / INT
+	Primary key
+	name
+	STRING
+	Name of product
+	description
+	TEXT
+	Description (shown to customers)
+	category
+	STRING
+	E.g., electronics, toiletries
+	image_url
+	STRING
+	For frontend display
+	default_price
+	DECIMAL
+	Price shown to customer
+	is_active
+	BOOLEAN
+	Visibility control
+	created_at
+	DATETIME
+	Timestamp
+	
+
+4. Vendor_Product_Inventory Table
+Field
+	Type
+	Description
+	id
+	UUID / INT
+	Primary key
+	vendor_id
+	FK (Vendors)
+	Vendor stocking the item
+	product_id
+	FK (Products)
+	The product
+	quantity_available
+	INTEGER
+	Last known count
+	last_checked_at
+	DATETIME
+	Last confirmed availability
+	Used to ping vendors, update inventory, and determine product proximity.
+
+
+5. Orders Table
+Field
+	Type
+	Description
+	id
+	UUID / INT
+	Primary key
+	customer_id
+	FK (Users)
+	Buyer
+	total_amount
+	DECIMAL
+	Sum of items + delivery
+	status
+	ENUM
+	'pending', 'confirmed', 'picked_up', 'delivered', 'cancelled'
+	payment_status
+	ENUM
+	'paid', 'refunded', 'pending'
+	vendor_id
+	FK (Vendors)
+	The fulfilling vendor
+	rider_id
+	FK (Users)
+	The person who accepted the delivery
+	delivery_eta
+	DATETIME
+	Estimated delivery time
+	cancellation_reason
+	TEXT
+	Optional reason
+	created_at
+	DATETIME
+	Timestamp
+	6. Order_Items Table
+Field
+	Type
+	Description
+	id
+	UUID / INT
+	Primary key
+	order_id
+	FK (Orders)
+	Parent order
+	product_id
+	FK (Products)
+	Ordered product
+	quantity
+	INTEGER
+	Ordered quantity
+	price
+	DECIMAL
+	Unit price at time of order
+	7. Delivery_Logs Table
+Field
+	Type
+	Description
+	id
+	UUID / INT
+	Primary key
+	order_id
+	FK (Orders)
+	Associated order
+	rider_id
+	FK (Users)
+	Who delivered
+	status
+	ENUM
+	'assigned', 'picked_up', 'in_transit', 'delivered', 'returned'
+	proof_of_delivery
+	STRING
+	Image URL or OTP code
+	updated_at
+	DATETIME
+	Timestamp
+	8. Support_Tickets Table
+Field
+	Type
+	Description
+	id
+	UUID / INT
+	Primary key
+	order_id
+	FK (Orders)
+	Order in question
+	opened_by
+	FK (Users)
+	Typically customer or support agent
+	assigned_to
+	FK (Users)
+	Admin or support staff
+	category
+	ENUM
+	'cancellation', 'missing item', 'wrong item', etc.
+	status
+	ENUM
+	'open', 'in_progress', 'resolved', 'escalated'
+	resolution_notes
+	TEXT
+	Optional
+	created_at
+	DATETIME
+	Timestamp
+	
+
+9. Vendor_Quality_Audit Table
+Field
+	Type
+	Description
+	id
+	UUID / INT
+	Primary key
+	vendor_id
+	FK (Vendors)
+	Vendor evaluated
+	score
+	INTEGER
+	Quality score (0–10)
+	notes
+	TEXT
+	Assessment comments
+	evaluator_id
+	FK (Users)
+	Field agent or QA personnel
+	created_at
+	DATETIME
+	Timestamp
+	
+
+🔄 Key Relationships
+* Each order can have multiple items.
+
+* Each product can be supplied by multiple vendors.
+
+* Riders are selected based on location, and loyalty.
+
+* Inventory is checked on demand or weekly.
+
+* Support bridges customers, vendors, and riders in disputes.
+
+* Admins handle vendor curation, manual overrides, and product listings.
+
+________________

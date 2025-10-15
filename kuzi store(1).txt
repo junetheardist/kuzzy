@@ -1,0 +1,123 @@
+﻿Great — using SMS as a fallback or parallel system alongside WhatsApp makes Kuzi more robust, especially in areas where WhatsApp is unreliable or vendors/riders use feature phones.
+________________
+
+
+📩 1. Requirements for SMS Integration
+✅ Essentials:
+Requirement
+	Notes
+	SMS Gateway Provider
+	E.g., Termii, Twilio, Africa’s Talking, InfoBip
+	Phone Number Collection
+	Must collect vendor/rider phone numbers at onboarding
+	Backend Logic
+	Your system must listen to SMS replies via webhook or polling
+	Message Cost Management
+	SMS is paid per message — keep messages concise
+	Delivery Retry Logic
+	Handle failed deliveries, timeouts, and fallback escalation
+	
+
+🧩 2. SMS-Based Workflow for Kuzi
+A. Vendor Availability Ping
+SMS Sent to Vendor:
+Kuzi: Do you have [Product Name] in stock near [Location]?
+Reply:
+1 = Yes
+2 = No
+3 = Only [X] left
+
+
+Expected Reply:
+* “1” → Available
+
+* “2” → Unavailable
+
+* “3” or “Only 2 left” → Partial availability
+
+System Action:
+   * Parse vendor reply via webhook
+
+   * Mark item as “confirmed” or “insufficient”
+
+   * Time out after 2 minutes → ping next vendor
+
+________________
+
+
+B. Rider Dispatch Alert
+SMS Sent to Rider:
+Kuzi Store Delivery:
+Pickup: [Vendor Area]
+Dropoff: [Customer Area]
+Payment: [Paid/POD]
+Reply YES to accept
+
+
+Expected Reply:
+      * “YES” or “ACCEPT” → Assign rider
+
+      * No response → Ping next available rider
+
+________________
+
+
+C. Customer Notifications (Optional)
+We can also use SMS to notify customers of order milestones:
+Order Confirmation:
+
+Kuzi Store: Order #12345 confirmed. ETA: 40 mins.
+
+
+
+
+Out for Delivery:
+
+Kuzi Store: Your rider [James] is en route. ETA: 20 mins.
+Delivery Completed:
+
+Kuzi Store: Your order has been delivered. Need help? Call 0900-xxx-xxx.
+
+
+
+
+________________
+
+
+⚙️ 3. System Architecture for SMS Support
+🔄 Flow:
+         1. Backend triggers SMS via API (e.g., Termii/Twilio)
+
+         2. Vendor/Rider replies go to your webhook (or retrieved via polling)
+
+         3. Backend parses the reply and updates the system state
+
+         4. If no reply within timeout (e.g. 2–3 minutes), fallback kicks in (ping next vendor/rider)
+
+________________
+
+
+🧱 Recommended Tools & Providers
+Purpose
+	Tools/Providers
+	SMS API
+	Termii, Twilio, Africa’s Talking
+	Backend Handling
+	Firebase Cloud Functions, Node.js, Laravel
+	Webhooks / Polling
+	Vendor/rider response listener
+	Fallback Routing
+	Your internal dispatch logic
+	
+
+
+
+✅ Best Practices
+            * Keep messages within 160 characters (1 SMS credit)
+
+            * Avoid long dynamic text — use product short codes if possible
+
+            * Always include fallback or escalation (if no reply)
+
+            * Log all SMS activity for transparency and debugging
+            *
