@@ -1,0 +1,151 @@
+﻿Users Table (with User Types)
+Field
+	Type
+	Description
+	UserID (PK)
+	INT
+	Unique ID for each user
+	Name
+	VARCHAR
+	Full name of user
+	PhoneNumber
+	VARCHAR
+	Unique phone number, used for login or notifications
+	Email
+	VARCHAR
+	Optional, for communication
+	PasswordHash
+	VARCHAR
+	Encrypted password (if login system exists)
+	UserType
+	ENUM
+	Customer, Vendor, DeliveryAgent, Support
+	Location
+	VARCHAR
+	General location/city
+	CreatedAt
+	DATETIME
+	Account creation date
+	UpdatedAt
+	DATETIME
+	Last profile update
+	________________
+
+
+Role-Specific Extensions
+Since each user type has unique needs, we can extend with role-specific tables linked by UserID.
+________________
+
+
+1. Customers
+Field
+	Type
+	Description
+	CustomerID (FK → Users.UserID)
+	INT
+	Links to Users table
+	Address
+	TEXT
+	Delivery address
+	PreferredPayment
+	ENUM
+	Card, USSD, Wallet
+	OrderHistoryCount
+	INT
+	Number of past orders
+	________________
+
+
+2. Vendors
+Field
+	Type
+	Description
+	VendorID (FK → Users.UserID)
+	INT
+	Links to Users table
+	StoreName
+	VARCHAR
+	Vendor’s shop name
+	StoreAddress
+	TEXT
+	Physical store location
+	BusinessType
+	ENUM
+	Retail, Wholesale
+	VerificationStatus
+	ENUM
+	Pending, Verified, Rejected
+	________________
+
+
+3. Delivery Agents
+Field
+	Type
+	Description
+	AgentID (FK → Users.UserID)
+	INT
+	Links to Users table
+	VehicleType
+	ENUM
+	Bike, Car, Van
+	LicenseNumber
+	VARCHAR
+	ID/License for verification
+	CurrentStatus
+	ENUM
+	Available, OnDelivery, Inactive
+	CompletedDeliveries
+	INT
+	Count of successful deliveries
+	________________
+
+
+4. Support Staff
+Field
+	Type
+	Description
+	SupportID (FK → Users.UserID)
+	INT
+	Links to Users table
+	Role
+	ENUM
+	Customer Support, Vendor Support, Logistics Support
+	ShiftSchedule
+	VARCHAR
+	Work hours or shift info
+	CasesHandled
+	INT
+	Number of tickets resolved
+	KYC & Verification Table (linked to UserID)
+
+
+Field
+	Type
+	Description
+	KYCID (PK)
+	INT
+	Unique ID
+	UserID (FK)
+	INT
+	Links to Users table
+	IDType
+	ENUM
+	National ID, Driver’s License, Voter’s Card, Passport
+	IDNumber
+	VARCHAR
+	Official ID number
+	IDDocument
+	VARCHAR
+	File/URL of uploaded document
+	ProofOfAddress
+	VARCHAR
+	Utility bill, tenancy agreement, etc.
+	VerificationStatus
+	ENUM
+	Pending, Verified, Rejected
+	VerifiedBy
+	INT (FK→SupportID)
+	Who verified it
+	VerifiedAt
+	DATETIME
+	Date of verification

@@ -1,0 +1,192 @@
+﻿Structure:
+* Products belong to categories → subcategories → have properties.
+
+* Vendors (hidden from customers) stock products with inventory levels.
+
+* Customers only see products & availability, not vendors.
+
+* Orders link customers, products, and delivery agents.
+
+________________
+
+
+Kuzzi Product & Order Management Schema (ERD)
+Entities & Relationships
+________________
+
+
+1. Users
+   * UserID (PK)
+
+   * Name
+
+   * PhoneNumber
+
+   * Email
+
+   * UserType (Customer, Vendor, DeliveryAgent, Support)
+
+   * Location
+
+________________
+
+
+2. Categories
+      * CategoryID (PK)
+
+      * CategoryName (e.g., Electronics, Fashion, Groceries)
+
+________________
+
+
+3. Subcategories
+         * SubcategoryID (PK)
+
+         * SubcategoryName (e.g., Smartphones, Laptops, Footwear)
+
+         * CategoryID (FK → Categories.CategoryID)
+
+________________
+
+
+4. Products
+            * ProductID (PK)
+
+            * ProductName
+
+            * Description
+
+            * SubcategoryID (FK → Subcategories.SubcategoryID)
+
+________________
+
+
+5. ProductProperties (dynamic attributes depending on category)
+               * PropertyID (PK)
+
+               * PropertyName (e.g., Size, Color, BatteryLife, Warranty)
+
+               * SubcategoryID (FK → Subcategories.SubcategoryID)
+
+________________
+
+
+6. ProductPropertyValues
+                  * ValueID (PK)
+
+                  * ProductID (FK → Products.ProductID)
+
+                  * PropertyID (FK → ProductProperties.PropertyID)
+
+                  * Value (e.g., “Red”, “128GB”, “2 years”)
+
+________________
+
+
+7. VendorInventory
+                     * InventoryID (PK)
+
+                     * VendorID (FK → Users.UserID, UserType=Vendor)
+
+                     * ProductID (FK → Products.ProductID)
+
+                     * QuantityAvailable
+
+                     * LastConfirmed (timestamp of vendor ping/check-in)
+
+________________
+
+
+8. Orders
+                        * OrderID (PK)
+
+                        * CustomerID (FK → Users.UserID, UserType=Customer)
+
+                        * OrderStatus (Pending, Confirmed, Dispatched, Delivered, Cancelled)
+
+                        * CreatedAt
+
+                        * UpdatedAt
+
+________________
+
+
+9. OrderItems
+                           * OrderItemID (PK)
+
+                           * OrderID (FK → Orders.OrderID)
+
+                           * ProductID (FK → Products.ProductID)
+
+                           * QuantityOrdered
+
+                           * Price
+
+________________
+
+
+10. Deliveries
+                              * DeliveryID (PK)
+
+                              * OrderID (FK → Orders.OrderID)
+
+                              * DeliveryAgentID (FK → Users.UserID, UserType=DeliveryAgent)
+
+                              * Status (Assigned, PickedUp, InTransit, Delivered, Cancelled)
+
+                              * AssignedAt
+
+                              * DeliveredAt
+
+________________
+
+
+11. SupportTickets
+                                 * TicketID (PK)
+
+                                 * OrderID (FK → Orders.OrderID)
+
+                                 * CustomerID (FK → Users.UserID)
+
+                                 * IssueType (ProductNotAvailable, DamagedItem, LateDelivery, Cancellation)
+
+                                 * ResolutionStatus (Open, In Progress, Resolved, Escalated)
+
+                                 * CreatedAt
+
+                                 * ResolvedAt
+
+________________
+
+
+Relationships Summary
+                                    * Users → Vendors, Customers, Delivery Agents, Support
+
+                                    * Categories → Subcategories → Products
+
+                                    * Products → have ProductProperties (dynamic)
+
+                                    * Vendors → maintain stock in VendorInventory
+
+                                    * Customers → place Orders → containing OrderItems
+
+                                    * Orders → assigned to Deliveries (handled by Delivery Agents)
+
+                                    * SupportTickets → resolve issues with Orders
+
+________________
+
+
+📌 How this helps Casua:
+                                       * Products are categorized in a structured way with flexible properties.
+
+                                       * Vendor stock is tracked without being visible to customers.
+
+                                       * Orders seamlessly connect customers, inventory, and delivery.
+
+                                       * Support workflows are embedded into the system.
+
+________________
+
+
+Do you want me to draw this as an ERD diagram (visual chart) so you can quickly share with your dev team, or should I leave it in this structured text format?

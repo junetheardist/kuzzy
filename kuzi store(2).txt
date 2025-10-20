@@ -1,0 +1,161 @@
+﻿🛒 Kuzi Order Management Workflow
+1. Customer Browses & Places Order
+
+   * Customer selects product from app/web.
+
+   * System pings nearby vendors to confirm item availability.
+
+      2. Vendor Confirms Availability
+
+         * Vendor receives WhatsApp/SMS alert.
+
+         * Responds with stock confirmation and quantity.
+
+            3. Order Confirmed
+
+               * System verifies availability.
+
+               * Customer payment is processed (Paystack/Flutterwave).
+
+                  4. Rider Matching
+
+                     * Nearby riders are alerted via WhatsApp or web.
+
+                     * First to accept gets the job, subject to verification.
+
+                        5. Item Pick-Up
+
+                           * Rider picks item from vendor or authorized store.
+
+                           * Optional: Item image or OTP confirmation at pickup.
+
+                              6. In Transit
+
+                                 * Rider heads to customer location.
+
+                                 * System updates order status and ETA.
+
+                                    7. Order Delivered
+
+                                       * Proof of delivery is captured (photo or OTP).
+
+                                       * Order marked as complete.
+
+                                          8. Internal Follow-Up
+
+                                             * System logs the transaction.
+
+                                             * Inventory and vendor payment records updated.
+
+________________
+
+
+📋 Order Status Table
+Status
+	Trigger Event
+	Responsible Party
+	Key Action Required
+	Pending Vendor Check
+	Customer places order
+	System
+	Notify vendors to confirm availability
+	Vendor Confirmed
+	Vendor replies with stock info
+	Vendor/System
+	Approve or reject based on availability
+	Payment Confirmed
+	Customer completes payment
+	Customer/System
+	Mark order as paid
+	Searching for Rider
+	Order confirmed
+	System
+	Alert nearby riders
+	Rider Assigned
+	Rider accepts job
+	Rider/System
+	Confirm pickup arrangement
+	Picked Up
+	Item collected from vendor
+	Rider
+	Confirm pickup via photo or OTP
+	In Transit
+	Rider leaves vendor location
+	Rider/System
+	Update customer with ETA
+	Delivered
+	Rider delivers to customer
+	Rider
+	Upload proof of delivery or use OTP
+	Completed
+	Delivery verified
+	System
+	Close order and log
+	Failed/Escalated
+	Any stage fails or times out
+	Support Team
+	Investigate, resolve, or refund
+	________________
+
+
+
+
+
+
+
+
+S/N
+	Stage
+	Description
+	User Type(s) Involved
+	Action Summary
+	1.
+	Order Placed
+	Customer selects item & checks out
+	Customer, System
+	Selects product, confirms payment
+	2.
+	Vendor Pinged
+	System contacts vendors nearby
+	System, Vendor
+	System sends ping, vendors respond
+	3.
+	Vendor Confirms
+	Stock confirmed or denied
+	Vendor, System
+	Confirms availability via SMS/WhatsApp
+	4.
+	Rider Alerted
+	System searches for delivery person
+	System, Rider
+	Riders in range notified
+	5.
+	Rider Accepts
+	One rider accepts job
+	Rider, System
+	Confirms they can pick up and deliver
+	6.
+	Item Picked Up
+	Product is collected from vendor
+	Rider, Vendor
+	Physical hand-off; proof collected
+	7.
+	Delivery in Progress
+	Rider heads to customer
+	Rider, System
+	Order tracking updates begin
+	8.
+	Order Delivered
+	Item handed to customer
+	Rider, Customer
+	Delivery confirmed (OTP/photo)
+	9.
+	Order Completed
+	Final update and system log
+	System
+	Status set to completed
+	10.
+	Issue/Failure
+	Any problem arises
+	Support, (all parties)
+	Resolved by human support as needed

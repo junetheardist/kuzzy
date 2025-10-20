@@ -1,0 +1,130 @@
+﻿🧩 1. WhatsApp API Use Cases in Kuzi
+Use Case
+	User Type
+	Purpose
+	Vendor Availability Ping
+	Vendor
+	Confirm item availability
+	Rider Order Alert
+	Rider
+	Alert for nearby order delivery
+	Customer Support
+	Customer
+	Status updates, inquiries, receipts
+	________________
+
+
+🛒 2. Vendor Availability Ping Workflow
+Trigger:
+Customer selects an item > System queries vendors in proximity > Vendors are pinged.
+WhatsApp Message (Sent Automatically):
+Hello, do you currently have the following item in stock?
+
+
+🛍️ Item: [Product Name]
+🔢 Quantity needed: [Qty]
+📍 Order Location: [Customer Area]
+
+
+Please reply:
+1️⃣ Yes - In stock
+2️⃣ No - Not available
+3️⃣ Available - Only [X] left
+
+
+System Response Logic:
+* “1” → Item confirmed available
+
+* “2” → Vendor skipped
+
+* “3” → Partial availability recorded
+
+* If no response in 2 minutes, ping next nearby vendor set
+
+________________
+
+
+🚴 3. Rider Dispatch Workflow
+Trigger:
+Order confirmed and paid > System identifies nearby riders > Pings via WhatsApp
+WhatsApp Message:
+🚨 New Delivery Request 🚨
+
+
+📦 Pickup Location: [Vendor/Store Area]
+📬 Delivery Location: [Customer Address or Area]
+💰 Payment: [Paid/Pay on Delivery]
+🕓 Deadline: [Time window]
+
+
+Please reply:
+✅ Accept
+❌ Decline
+
+
+System Response Logic:
+   * First rider to respond with “Accept” gets assigned
+
+   * Backup pings triggered if no rider responds in 2–3 minutes
+
+________________
+
+
+💬 4. Customer Notifications via WhatsApp (Optional/Hybrid Support)
+      * Order Confirmation:
+
+Thank you for your order on Kuzi! 🙌
+
+
+🛍️ Items: [Short summary]
+🕓 ETA: 35–45 mins
+📦 Tracking ID: [#12345]
+
+
+         * Order Dispatched:
+
+Your order is on the way! 🚚
+
+
+👤 Rider: James
+📞 Phone: 0801XXXXXXX
+ETA: 25 mins
+
+
+            * Delivery Complete:
+
+✅ Your Kuzi order has been delivered.
+
+
+Need help? Reply here or type “Support.”
+
+
+________________
+
+
+🧠 How Backend Tracks It
+Event
+	WhatsApp Trigger
+	Action Logged in DB
+	Vendor replies
+	Yes/No/Partial
+	Item status per vendor
+	Rider accepts order
+	Accept
+	Assign rider + mark order
+	Customer messages
+	Any input
+	Routed to support dashboard
+	________________
+
+
+🧱 Tools  Needed
+               * WhatsApp Business API provider (Twilio, 360dialog, Gupshup)
+
+               * Middleware or backend service (Node.js, Firebase Cloud Functions, etc.)
+
+               * Webhook endpoint to receive and respond to messages
+
+               * Admin interface to monitor conversations/logs
+
+________________

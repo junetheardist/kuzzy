@@ -1,0 +1,235 @@
+﻿🛠️ Kuzi Support Team Workflow
+1. Issue Detection & Entry Points
+Trigger
+	Source
+	Action by Support
+	Vendor doesn’t respond to ping
+	System timeout
+	Manually follow up with vendor via WhatsApp
+	Rider doesn’t accept order
+	System alert (no match)
+	Locate available rider manually
+	Customer reports issue
+	WhatsApp, Call, or Email
+	Create support ticket
+	Delivery delayed
+	System flag (ETA exceeded)
+	Contact rider/vendor to investigate
+	Order stuck in a status
+	Dashboard check/manual
+	Diagnose and manually update status
+	________________
+
+
+2. Investigation & Communication
+* Vendor Issues
+
+   * Contact vendor via WhatsApp
+
+   * Confirm stock status or item handoff
+
+   * Update system manually if needed
+
+      * Rider Issues
+
+         * Check rider's location via call or WhatsApp
+
+         * Reassign rider if necessary
+
+         * Verify delivery progress
+
+            * Customer Issues
+
+               * Respond via call/WhatsApp
+
+               * Validate claims (e.g. wrong item, not delivered)
+
+               * Issue apology, refund, or re-dispatch depending on case
+
+________________
+
+
+3. Action & Resolution
+Issue Type
+	Support Action
+	Vendor unavailable
+	Replace vendor, notify system of substitution
+	Rider unreachable
+	Cancel assignment and reassign another nearby agent
+	Item not delivered
+	Contact rider/vendor → verify → resend or refund
+	Wrong item delivered
+	Log error, offer resolution to customer
+	Order not progressing
+	Manually update order status after verifying cause
+	Refund request
+	Confirm payment and process refund (via admin tools)
+	________________
+
+
+4. Logging & Follow-up
+                  * Update internal support log with issue, steps taken, and resolution
+
+                  * Flag problematic vendors or riders for review
+
+                  * Aggregate weekly support report for trends (manual or Airtable)
+
+________________
+
+
+🧾 Optional Support Dashboard Tools
+Tool
+	Purpose
+	Manual Status Editor
+	Change status (e.g. "Picked Up", "Delivered")
+	Notes per Order
+	Log interventions or issues
+	Rider/Vendor Blacklist
+	Temporary block for repeat offenders
+	Resend Ping Button
+	Trigger fresh ping to vendors
+	Refund Trigger
+	Manual refund initiation tool
+	
+
+
+
+
+
+
+
+
+
+🧭 Kuzi Order Resolution Guide
+Handling failed, delayed, or disputed orders with clarity and consistency
+________________
+
+
+🧵 USE CASES & WORKFLOWS
+1. Order Item Out of Stock (Vendor Issue)
+Trigger: Customer selects item → Vendor pings → No vendor confirms availability
+Actors: System, Vendor, Support Team
+Step
+	Action
+	1
+	System fails to receive vendor confirmation within 1–3 mins
+	2
+	Support is alerted by timeout flag
+	3
+	Support manually contacts backup vendors via WhatsApp
+	4
+	If item is found, mark vendor manually and allow order to proceed
+	5
+	If not found, notify customer → suggest alternative or cancel
+	6
+	Record vendor response behavior for future filtering
+	________________
+
+
+2. Rider Fails to Pick Up or Deliver
+Trigger: Order accepted by rider → No update within expected time
+Actors: Rider, Vendor, Customer, Support Team
+Step
+	Action
+	1
+	System monitors lack of pickup or delay past estimated time
+	2
+	Support attempts contact with rider (call/WhatsApp)
+	3
+	If unresponsive or rider cancels, support reassigns to another nearby rider
+	4
+	Vendor is informed of new pickup window
+	5
+	Customer receives updated delivery ETA
+	6
+	Add rider note (e.g. late, unreachable) for performance tracking
+	________________
+
+
+3. Wrong or Damaged Item Delivered
+Trigger: Customer reports issue via WhatsApp or call
+Actors: Customer, Rider, Vendor, Support
+Step
+	Action
+	1
+	Support verifies issue with customer (photo evidence if possible)
+	2
+	Contact vendor to confirm what was handed off
+	3
+	Contact rider for delivery proof and clarification
+	4
+	If vendor fault: refund or re-dispatch; flag vendor for error
+	5
+	If rider fault: internal warning; may require redelivery
+	6
+	Record all parties’ responses in ticket notes
+	7
+	Resolve order → update status to “Resolved – Vendor Error” or equivalent
+	________________
+
+
+4. Customer Wants Refund After Cancelation
+Trigger: Order canceled due to vendor/rider failure or customer request
+Actors: Customer, System, Support
+Step
+	Action
+	1
+	Confirm payment has been made (via payment logs)
+	2
+	Confirm cancellation reason (vendor out of stock, delay, etc.)
+	3
+	If valid, initiate refund using admin tool (Flutterwave/Paystack dashboard)
+	4
+	Notify customer and share timeline (1–3 business days)
+	5
+	Update order with “Refunded” status and ticket ID
+	________________
+
+
+5. No Proof of Delivery
+Trigger: Customer claims non-delivery, but rider marked “Delivered”
+Actors: Customer, Rider, Support
+Step
+	Action
+	1
+	Check for delivery proof: OTP or delivery photo
+	2
+	Contact rider to confirm exact drop-off
+	3
+	Contact customer for verification and discrepancy check
+	4
+	If proof insufficient, assume fault → offer refund or reattempt
+	5
+	Mark issue for rider follow-up or retraining if repeated
+	________________
+
+
+🛡️ Escalation Rules
+Scenario
+	Escalate to Ops Manager?
+	Refund Required?
+	No vendor response
+	No (unless daily recurring)
+	No
+	Rider unreachable after acceptance
+	Yes (after 2+ cases)
+	Only if pre-paid
+	Item error (repeat vendor)
+	Yes
+	Yes
+	Fraudulent activity suspected
+	Yes (immediately)
+	Yes (after review)
+	________________
+
+
+🗂️ Logging Checklist (Support Team)
+                     * ✅ Date/time of issue
+
+                     * ✅ Affected parties and contact logs
+
+                     * ✅ Screenshots/photos (if any)
+
+                     * ✅ Resolution offered and accepted
+
+                     * ✅ Final status (Resolved / Refunded / Reassigned)
