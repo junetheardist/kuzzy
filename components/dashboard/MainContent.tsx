@@ -1,6 +1,7 @@
 "use client"
 import React, {useState} from 'react'
 import {DialogDemo} from "@/components/dashboard/CreateVendor";
+import MultiStepNav from "@/components/dashboard/MultiStepNav";
 
 export default function MainContent() {
     const [isExpanded, setIsExpanded] = useState(false)
@@ -10,7 +11,7 @@ export default function MainContent() {
             <button onClick={() => setIsExpanded(!isExpanded)}>
                 {isExpanded ? "Expand" : "Collapse"}
             </button>
-
+            <MultiStepNav/>
         </div>
     )
 }
