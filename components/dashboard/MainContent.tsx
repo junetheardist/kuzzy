@@ -6,7 +6,7 @@ import MultiStepNav from "@/components/dashboard/MultiStepNav";
 export default function MainContent() {
     const [isExpanded, setIsExpanded] = useState(false)
     return (
-        <div className={`bg-red-500 w-full rounded-3xl p-8 ${isExpanded ? "h-full" : "h-fit"}`}>
+        <div className={`bg-white w-full rounded-3xl p-8 ${isExpanded ? "h-full" : "h-fit"}`}>
             <DialogDemo/>
             <button onClick={() => setIsExpanded(!isExpanded)}>
                 {isExpanded ? "Expand" : "Collapse"}
