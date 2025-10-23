@@ -10,7 +10,7 @@ const navItems = [
 
 export default function Sidebar() {
     return (
-        <aside className="w-64 bg-red-500 rounded-3xl p-8   ">
+        <aside className="w-124 bg-red-500 rounded-3xl p-8   ">
             <h2 className="text-xl font-bold mb-6">Kuzi Dashboard</h2>
             <nav>
                 <ul className="space-y-4">
