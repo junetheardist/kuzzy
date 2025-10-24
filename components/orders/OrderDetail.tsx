@@ -4,12 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Order } from "@/types/order";
 import { X } from "lucide-react";
 
-interface OrderDetailsPopupProps {
+interface OrderDetails {
   order: Order | null;
   onClose: () => void;
 }
 
-export const OrderDetailsPopup = ({ order, onClose }: OrderDetailsPopupProps) => {
+export const OrderDetail = ({ order, onClose }: OrderDetails) => {
   return (
     <AnimatePresence>
       {order && (

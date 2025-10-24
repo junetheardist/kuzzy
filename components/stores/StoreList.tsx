@@ -1,7 +1,7 @@
 // src/components/stores/StoreList.tsx
 import React from "react";
 import { Store } from "@/types/Store";
-import { StoreCard, CompactStoreCard } from "../orders/StoreCard";
+import { StoreCard, CompactStoreCard } from "./StoreCard";
 
 interface StoreListProps {
   stores: Store[];

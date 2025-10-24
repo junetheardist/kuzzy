@@ -2,18 +2,30 @@
 import React, { useState, useMemo } from 'react';
 import { regions, states, lgas, communities, streets } from '@/data/regions';
 import { RegionListItem } from '@/types/region'; // Assuming this path is correct
-import { RegionCard } from "@/components/Regions/RegionCard"
-import { ChevronRight } from 'lucide-react';
+import { RegionCard } from "@/components/Regions/RegionCard";
+import { ChevronRight, Store, ShoppingCart, Package, Users } from 'lucide-react';
 
 type DisplayLevel = 'regions' | 'states' | 'lgas' | 'communities' | 'streets';
+type TotalType = 'stores' | 'orders' | 'products' | 'customers';
 
-export const RegionFilterView = () => {
+const tabOptions: { value: TotalType; icon: React.ElementType }[] = [
+  { value: 'stores', icon: Store },
+  { value: 'orders', icon: ShoppingCart },
+  { value: 'products', icon: Package },
+  { value: 'customers', icon: Users },
+];
+
+interface RegionFilterViewProps {
+  onShowPreview: (type: string, data: any) => void;
+}
+
+export const RegionFilterView = ({ onShowPreview }: RegionFilterViewProps) => {
   const [selectedRegion, setSelectedRegion] = useState<RegionListItem | null>(null);
   const [selectedState, setSelectedState] = useState<RegionListItem | null>(null);
   const [selectedLga, setSelectedLga] = useState<RegionListItem | null>(null);
   const [selectedCommunity, setSelectedCommunity] = useState<RegionListItem | null>(null);
 
-  const [displayTotalFor, setDisplayTotalFor] = useState<'stores' | 'orders' | 'products' | 'users'>('stores');
+  const [displayTotalFor, setDisplayTotalFor] = useState<TotalType>('stores');
 
   const { list, level }: { list: RegionListItem[]; level: DisplayLevel } = useMemo(() => {
     if (selectedCommunity) {
@@ -60,6 +72,10 @@ export const RegionFilterView = () => {
     }
   };
 
+  const handleViewStores = (region: RegionListItem, type: TotalType) => {
+    onShowPreview(type, region);
+  };
+
   const breadcrumbs = [
     { name: 'All Regions', action: () => { setSelectedRegion(null); setSelectedState(null); setSelectedLga(null); setSelectedCommunity(null); } },
     selectedRegion && { name: selectedRegion.name, action: () => { setSelectedState(null); setSelectedLga(null); setSelectedCommunity(null); } },
@@ -83,28 +99,34 @@ export const RegionFilterView = () => {
       </div>
 
       {/* Data Type Filter */}
-      <div className="mb-4">
-        <label htmlFor="total-select" className="text-xs font-medium text-gray-600 mr-2">Show totals for:</label>
-        <select
-          id="total-select"
-          value={displayTotalFor}
-          onChange={(e) => setDisplayTotalFor(e.target.value as any)}
-          className="text-xs p-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="stores">Stores</option>
-          <option value="orders">Orders</option>
-          <option value="products">Products</option>
-          <option value="users">Users</option>
-        </select>
+      <div className="mb-4 flex items-center justify-center rounded-lg bg-gray-100 p-1">
+        {tabOptions.map((option) => (
+          <button
+            key={option.value}
+            onClick={() => setDisplayTotalFor(option.value)}
+            className={`flex-1 rounded-md p-2 text-sm font-medium transition-colors ${
+              displayTotalFor === option.value
+                ? 'bg-white text-gray-800 shadow-sm'
+                : 'text-gray-500 hover:bg-gray-200'
+            }`}
+            title={option.value.charAt(0).toUpperCase() + option.value.slice(1)}
+          >
+            <option.icon className="w-5 h-5 mx-auto" />
+          </button>
+        ))}
       </div>
 
       {/* Results Grid */}
       {list.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 overflow-y-auto pb-4">
+        <div className="flex flex-col gap-2 flex-1 overflow-y-auto pb-4">
           {list.map((item) => (
-            <div key={item.id} onClick={() => handleSelect(item)}>
-              <RegionCard region={item} displayTotalFor={displayTotalFor} />
-            </div>
+            <RegionCard
+              key={item.id}
+              region={item}
+              displayTotalFor={displayTotalFor}
+              onSelect={handleSelect}
+              onViewStores={handleViewStores}
+            />
           ))}
         </div>
       ) : (

@@ -1,4 +1,11 @@
 import { Region, State, LGA, Community, Street } from "@/types/region";
+import { getStoreCount, getCustomerCount, getOrderCount, getProductCount } from "@/lib/data-utils";
+
+const southSouthStates = ["Rivers", "Akwa Ibom", "Bayelsa", "Cross River", "Delta", "Edo", "Abuja"];
+const southWestStates = ["Lagos", "Ogun", "Oyo", "Osun", "Ondo", "Ekiti"];
+
+const riversLGAs = ["Port Harcourt", "Obio-Akpor", "Eleme", "Ikwerre"];
+const lagosLGAs = ["Ikeja", "Eti-Osa", "Surulere", "Alimosho"];
 
 export const regions: Region[] = [
   {
@@ -12,19 +19,19 @@ export const regions: Region[] = [
       "Delta",
       "Edo",
     ],
-    storeCount: 150,
-    orderCount: 2500,
-    productCount: 12000,
-    userCount: 5000,
+    storeCount: getStoreCount(southSouthStates),
+    orderCount: getOrderCount(southSouthStates),
+    productCount: getProductCount(southSouthStates),
+    customerCount: getCustomerCount(southSouthStates),
   },
   {
     id: "REG-SW",
     name: "South-West",
     sublocationNames: ["Lagos", "Ogun", "Oyo", "Osun", "Ondo", "Ekiti"],
-    storeCount: 450,
-    orderCount: 18000,
-    productCount: 95000,
-    userCount: 22000,
+    storeCount: getStoreCount(southWestStates),
+    orderCount: getOrderCount(southWestStates),
+    productCount: getProductCount(southWestStates),
+    customerCount: getCustomerCount(southWestStates),
   },
 ];
 
@@ -33,21 +40,21 @@ export const states: State[] = [
     id: "STA-RV",
     name: "Rivers",
     regionId: "REG-SS",
-    sublocationNames: ["Port Harcourt", "Obio-Akpor", "Eleme", "Ikwerre"],
-    storeCount: 80,
-    orderCount: 1200,
-    productCount: 6000,
-    userCount: 2500,
+    sublocationNames: riversLGAs,
+    storeCount: getStoreCount(["Rivers"]),
+    orderCount: getOrderCount(["Rivers"]),
+    productCount: getProductCount(["Rivers"]),
+    customerCount: getCustomerCount(["Rivers"]),
   },
   {
     id: "STA-LA",
     name: "Lagos",
     regionId: "REG-SW",
-    sublocationNames: ["Ikeja", "Eti-Osa", "Surulere", "Alimosho"],
-    storeCount: 350,
-    orderCount: 15000,
-    productCount: 80000,
-    userCount: 18000,
+    sublocationNames: lagosLGAs,
+    storeCount: getStoreCount(["Lagos"]),
+    orderCount: getOrderCount(["Lagos"]),
+    productCount: getProductCount(["Lagos"]),
+    customerCount: getCustomerCount(["Lagos"]),
   },
 ];
 
@@ -57,30 +64,30 @@ export const lgas: LGA[] = [
     name: "Port Harcourt",
     stateId: "STA-RV",
     sublocationNames: ["Old GRA", "New GRA", "D-Line", "Diobu"],
-    storeCount: 50,
-    orderCount: 800,
-    productCount: 4000,
-    userCount: 1500,
+    storeCount: getStoreCount(["Rivers"]), // Simplified for mock
+    orderCount: getOrderCount(["Rivers"]),
+    productCount: getProductCount(["Rivers"]),
+    customerCount: getCustomerCount(["Rivers"]),
   },
   {
     id: "LGA-ETI",
     name: "Eti-Osa",
     stateId: "STA-LA",
     sublocationNames: ["Lekki Phase 1", "Victoria Island", "Ikoyi"],
-    storeCount: 120,
-    orderCount: 7000,
-    productCount: 45000,
-    userCount: 9000,
+    storeCount: getStoreCount(["Lagos"]), // Simplified for mock
+    orderCount: getOrderCount(["Lagos"]),
+    productCount: getProductCount(["Lagos"]),
+    customerCount: getCustomerCount(["Lagos"]),
   },
   {
     id: "LGA-IKE",
     name: "Ikeja",
     stateId: "STA-LA",
     sublocationNames: ["Ikeja GRA", "Opebi", "Allen Avenue"],
-    storeCount: 90,
-    orderCount: 4500,
-    productCount: 20000,
-    userCount: 5000,
+    storeCount: getStoreCount(["Lagos"]), // Simplified for mock
+    orderCount: getOrderCount(["Lagos"]),
+    productCount: getProductCount(["Lagos"]),
+    customerCount: getCustomerCount(["Lagos"]),
   },
 ];
 
@@ -90,30 +97,30 @@ export const communities: Community[] = [
     name: "Old GRA",
     lgaId: "LGA-PH",
     sublocationNames: ["Olu Obasanjo Road", "Tombia Street", "Forces Avenue"],
-    storeCount: 15,
-    orderCount: 250,
-    productCount: 1200,
-    userCount: 400,
+    storeCount: getStoreCount(["Rivers"]), // Simplified
+    orderCount: getOrderCount(["Rivers"]),
+    productCount: getProductCount(["Rivers"]),
+    customerCount: getCustomerCount(["Rivers"]),
   },
   {
     id: "COM-LEKKI1",
     name: "Lekki Phase 1",
     lgaId: "LGA-ETI",
     sublocationNames: ["Admiralty Way", "Fola Osibo Road", "Omorinre Johnson Street"],
-    storeCount: 60,
-    orderCount: 4000,
-    productCount: 25000,
-    userCount: 5500,
+    storeCount: getStoreCount(["Lagos"]), // Simplified
+    orderCount: getOrderCount(["Lagos"]),
+    productCount: getProductCount(["Lagos"]),
+    customerCount: getCustomerCount(["Lagos"]),
   },
   {
     id: "COM-IKEGRA",
     name: "Ikeja GRA",
     lgaId: "LGA-IKE",
     sublocationNames: ["Isaac John Street", "Oduduwa Crescent", "Joel Ogunnaike Street"],
-    storeCount: 30,
-    orderCount: 1500,
-    productCount: 8000,
-    userCount: 1800,
+    storeCount: getStoreCount(["Lagos"]), // Simplified
+    orderCount: getOrderCount(["Lagos"]),
+    productCount: getProductCount(["Lagos"]),
+    customerCount: getCustomerCount(["Lagos"]),
   },
 ];
 
@@ -123,19 +130,19 @@ export const streets: Street[] = [
     name: "Olu Obasanjo Road",
     communityId: "COM-PHGRA",
     sublocationNames: [],
-    storeCount: 5,
-    orderCount: 80,
-    productCount: 450,
-    userCount: 120,
+    storeCount: 1, // Highly specific, manual override might be needed
+    orderCount: 10,
+    productCount: 50,
+    customerCount: 20,
   },
   {
     id: "STR-FOLA",
     name: "Fola Osibo Road",
     communityId: "COM-LEKKI1",
     sublocationNames: [],
-    storeCount: 12,
-    orderCount: 900,
-    productCount: 6000,
-    userCount: 1100,
+    storeCount: 1, // Highly specific, manual override might be needed
+    orderCount: 50,
+    productCount: 200,
+    customerCount: 100,
   },
 ];

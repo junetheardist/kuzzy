@@ -10,7 +10,7 @@ export interface RegionListItem {
   storeCount: number;
   orderCount: number;
   productCount: number;
-  userCount: number;
+  customerCount: number;
 }
 
 /** Represents a top-level region (e.g., "South-South", "North-Central"). */
