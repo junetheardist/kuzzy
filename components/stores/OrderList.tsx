@@ -1,7 +1,7 @@
 // src/components/orders/OrderList.tsx
 import React from "react";
 import { Order } from "@/types/order";
-import { OrderCard, CompactOrderCard } from "./OrderCard";
+import { OrderCard, CompactOrderCard } from "../orders/OrderCard";
 
 interface OrderListProps {
   orders: Order[];
@@ -9,26 +9,22 @@ interface OrderListProps {
 }
 
 /* 🟢 Default Grid View (uses detailed OrderCard) */
-export const OrderList = ({ orders, onOrderSelect }: OrderListProps) => {
+export const OrderList = ({ orders }: OrderListProps) => {
   return (
     <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-4 cursor-pointer ">
       {orders.map((order) => (
-        <div key={order.id} onClick={() => onOrderSelect?.(order)}>
-          <OrderCard order={order} />
-        </div>
+        <OrderCard key={order.id} order={order} />
       ))}
     </div>
   );
 };
 
 /* 🟣 Compact List View (uses CompactOrderCard) */
-export const CompactOrderList = ({ orders, onOrderSelect }: OrderListProps) => {
+export const CompactOrderList = ({ orders }: OrderListProps) => {
   return (
     <div className="space-y-1 ">
       {orders.map((order) => (
-        <div key={order.id} onClick={() => onOrderSelect?.(order)}>
-          <CompactOrderCard order={order} />
-        </div>
+        <CompactOrderCard key={order.id} order={order} />
       ))}
     </div>
   );
