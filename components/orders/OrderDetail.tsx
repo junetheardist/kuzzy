@@ -5,37 +5,13 @@ import { Order } from "@/types/order";
 import { X } from "lucide-react";
 
 interface OrderDetails {
-  order: Order | null;
+  order: Order;
   onClose: () => void;
 }
 
 export const OrderDetail = ({ order, onClose }: OrderDetails) => {
   return (
-    <AnimatePresence>
-      {order && (
-        <motion.div
-          key="overlay"
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            key="popup"
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="bg-white rounded-xl shadow-2xl w-[90vw] md:w-[500px] h-[90vh]  overflow-y-auto relative"
-          >
-            <button
-              onClick={onClose}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="p-6">
+    <div className="p-6">
               <h2 className="text-lg font-semibold mb-4">
                 Order #{order.id}
               </h2>
@@ -82,9 +58,5 @@ export const OrderDetail = ({ order, onClose }: OrderDetails) => {
                 </p>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 };

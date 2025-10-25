@@ -2,6 +2,7 @@ import { stores } from '@/data/stores';
 import { customers } from '@/data/customers';
 import { orders } from '@/data/orders';
 import { products } from '@/data/products';
+import { deliveryAgents } from '@/data/deliveryAgents';
 
 /**
  * Gets the total number of stores within a given set of locations (states, LGAs, etc.).
@@ -17,6 +18,14 @@ export const getStoreCount = (locations: string[]): number => {
  */
 export const getCustomerCount = (locations: string[]): number => {
   return customers.filter(customer => locations.includes(customer.address.state)).length;
+};
+
+/**
+ * Gets the total number of delivery agents within a given set of locations.
+ * An agent's location is determined by their `address.state`.
+ */
+export const getDeliveryAgentCount = (locations: string[]): number => {
+  return deliveryAgents.filter(agent => locations.includes(agent.address.state)).length;
 };
 
 /**

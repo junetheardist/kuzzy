@@ -1,5 +1,5 @@
 import { Region, State, LGA, Community, Street } from "@/types/region";
-import { getStoreCount, getCustomerCount, getOrderCount, getProductCount } from "@/lib/data-utils";
+import { getStoreCount, getCustomerCount, getOrderCount, getProductCount, getDeliveryAgentCount } from "@/lib/data-utils";
 
 const southSouthStates = ["Rivers", "Akwa Ibom", "Bayelsa", "Cross River", "Delta", "Edo", "Abuja"];
 const southWestStates = ["Lagos", "Ogun", "Oyo", "Osun", "Ondo", "Ekiti"];

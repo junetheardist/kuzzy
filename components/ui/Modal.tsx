@@ -19,7 +19,7 @@ export const Modal = ({ isOpen, onClose, children, title }: ModalProps) => {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-xl flex flex-col min-h-[80vh] w-full"
+        className="bg-white rounded-2xl shadow-xl flex flex-col min-h-[80vh] w-full max-w-3xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
