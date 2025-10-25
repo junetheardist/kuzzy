@@ -5,6 +5,7 @@ import { StoreCard, CompactStoreCard } from "./StoreCard";
 
 interface StoreListProps {
   stores: Store[];
+  onStoreSelect?: (store: Store) => void;
 }
 
 /* 🟢 Default Grid View (uses detailed StoreCard) */
@@ -19,11 +20,11 @@ export const StoreList = ({ stores }: StoreListProps) => {
 };
 
 /* 🟣 Compact List View (uses CompactStoreCard) */
-export const CompactStoreList = ({ stores }: StoreListProps) => {
+export const CompactStoreList = ({ stores, onStoreSelect }: StoreListProps) => {
   return (
     <div className="space-y-1">
       {stores.map((store) => (
-        <CompactStoreCard key={store.id} store={store} />
+        <CompactStoreCard key={store.id} store={store} onClick={() => onStoreSelect?.(store)} />
       ))}
     </div>
   );

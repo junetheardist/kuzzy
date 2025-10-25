@@ -4,6 +4,7 @@ import { ListView, ColumnDefinition } from '@/components/ui/ListView';
 
 interface TableCustomerListProps {
   customers: User[];
+  onItemClick?: (customer: User) => void;
 }
 
 const customerColumns: ColumnDefinition<User>[] = [
@@ -29,6 +30,6 @@ const customerColumns: ColumnDefinition<User>[] = [
   },
 ];
 
-export const TableCustomerList = ({ customers }: TableCustomerListProps) => {
-  return <ListView items={customers.slice(0, 15)} columns={customerColumns} emptyStateMessage="No customers found." />;
+export const TableCustomerList = ({ customers, onItemClick }: TableCustomerListProps) => {
+  return <ListView items={customers.slice(0, 15)} columns={customerColumns} onItemClick={onItemClick} emptyStateMessage="No customers found." />;
 };

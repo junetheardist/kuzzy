@@ -4,6 +4,7 @@ import { ListView, ColumnDefinition } from '@/components/ui/ListView'
 
 interface TableStoreListProps {
   stores: Store[];
+  onItemClick?: (store: Store) => void;
 }
 
 const storeColumns: ColumnDefinition<Store>[] = [
@@ -42,6 +43,6 @@ const storeColumns: ColumnDefinition<Store>[] = [
   },
 ];
 
-export const TableStoreList = ({ stores }: TableStoreListProps) => {
-  return <ListView items={stores} columns={storeColumns} emptyStateMessage="No stores found." />;
+export const TableStoreList = ({ stores, onItemClick }: TableStoreListProps) => {
+  return <ListView items={stores} columns={storeColumns} onItemClick={onItemClick} emptyStateMessage="No stores found." />;
 };

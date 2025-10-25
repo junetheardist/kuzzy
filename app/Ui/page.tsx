@@ -1,23 +1,29 @@
 'use client';
 import React, { useState, useMemo } from 'react';
-import { CompactOrderList, TableOrderList } from "@/components/orders/orderList";
+import { CompactOrderList, TableOrderList as PreviewTableOrderList } from "@/components/orders/orderList";
 import { CompactStoreList } from "@/components/stores/StoreList";
 import { RegionFilterView } from '@/components/Regions/RegionFilterView';
 import { regions, states } from '@/data/regions';
-import UserMap from '@/components/dashboard/UserMap'; // This line is already correct, no change needed.
+import UserMap from '@/components/dashboard/UserMap';
 import { orders } from '@/data/orders';
-import { stores } from '@/data/stores';
+import { stores,  } from '@/data/stores';
 import { OrderDetail } from '@/components/orders/OrderDetail';
 import { Order } from '@/types/order';
-import { Modal } from '../../components/ui/Modal';
+import { Product } from '@/types/product';
+import { User as Customer } from '@/types/user';
+import { Modal } from '@/components/ui/Modal';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { TableStoreList } from '@/components/stores/StoreListView';
 import { products } from '@/data/products';
-import { customers } from '@/data/customers'; // Import the new customer data
+import { customers } from '@/data/customers';
+import { StoreDetail } from '@/components/stores/StoreDetail';
+import { ProductDetail } from '@/components/products/ProductDetail';
+import { CustomerDetail } from '@/components/customers/CustomerDetail';
 import { TableProductList } from '@/components/products/TableProductList';
 import { TableCustomerList } from '@/components/customers/TableCustomerList';
-import { TableOrderList as PreviewTableOrderList } from '@/components/orders/orderList';
+import { AddStoreForm } from '@/components/Forms/stores/AddStoreForm';
+import { Button } from '@/components/ui/Button';
 
 
 export default function UiComponents() {
@@ -25,6 +31,10 @@ export default function UiComponents() {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [activeTab, setActiveTab] = useState('orders');
     const [preview, setPreview] = useState<{ type: string; data: any } | null>(null);
+    const [selectedStore, setSelectedStore] = useState<typeof stores[number]| null>(null);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+    const [isAddStoreModalOpen, setAddStoreModalOpen] = useState(false);
 
     const handleShowPreview = (type: string, data: any) => {
         setPreview({ type, data });
@@ -43,19 +53,19 @@ export default function UiComponents() {
         switch (type) {
             case 'stores':
                 const filteredStores = stores.filter(store => statesToFilter.includes(store.address.state));
-                return { title: `Stores in ${regionName}`, content: <TableStoreList stores={filteredStores} /> };
+                return { title: `Stores in ${regionName}`, content: <TableStoreList stores={filteredStores} onItemClick={setSelectedStore} /> };
             case 'products':
                 // Products are not tied to a region in the current data model, so we show all.
-                return { title: `Products in ${regionName}`, content: <TableProductList products={products} /> };
+                return { title: `Products in ${regionName}`, content: <TableProductList products={products} onItemClick={setSelectedProduct} /> };
             case 'customers':
                 const filteredCustomers = customers.filter(customer => statesToFilter.includes(customer.address.state));
-                return { title: `Customers in ${regionName}`, content: <TableCustomerList customers={filteredCustomers} /> };
+                return { title: `Customers in ${regionName}`, content: <TableCustomerList customers={filteredCustomers} onItemClick={setSelectedCustomer} /> };
             case 'orders':
                 const storeIdsInRegion = stores
                     .filter(store => statesToFilter.includes(store.address.state))
                     .map(store => store.id);
                 const filteredOrders = orders.filter(order => storeIdsInRegion.includes(order.storeId));
-                return { title: `Orders in ${regionName}`, content: <PreviewTableOrderList orders={filteredOrders} /> };
+                return { title: `Orders in ${regionName}`, content: <PreviewTableOrderList orders={filteredOrders} onOrderSelect={setSelectedOrder} /> };
             default:
                 return null;
         }
@@ -87,7 +97,16 @@ export default function UiComponents() {
                     </div>
                     <div className="overflow-y-auto flex-1">
                         {activeTab === 'orders' && <div className="py-4"><CompactOrderList orders={orders} onOrderSelect={setSelectedOrder} /></div>}
-                        {activeTab === 'stores' && <div className="py-4"><CompactStoreList stores={stores} /></div>}
+                        {activeTab === 'stores' && (
+                            <div className="py-4">
+                                <div className="px-4 mb-2">
+                                    <Button onClick={() => setAddStoreModalOpen(true)} className="w-full">
+                                        <Plus className="w-4 h-4 mr-2" /> Add Store
+                                    </Button>
+                                </div>
+                                <CompactStoreList stores={stores} onStoreSelect={setSelectedStore} />
+                            </div>
+                        )}
                         {activeTab === 'locations' && <RegionFilterView onShowPreview={handleShowPreview} />}
                     </div>
                 </div>
@@ -121,9 +140,36 @@ export default function UiComponents() {
                     onClose={() => setSelectedOrder(null)}
                     title={selectedOrder ? `Order #${selectedOrder.id}` : 'Order Details'}
                 >
-                    {selectedOrder && <OrderDetail order={selectedOrder} onClose={function (): void {
-                    throw new Error('Function not implemented.');
-                } } />} {/* Changed from OrderDetailsPopup */}
+                    {selectedOrder && <OrderDetail order={selectedOrder} onClose={() => setSelectedOrder(null)} />}
+                </Modal>
+
+                <Modal
+                    isOpen={isAddStoreModalOpen}
+                    onClose={() => setAddStoreModalOpen(false)}
+                    title="Add a New Store">
+                    <AddStoreForm onClose={() => setAddStoreModalOpen(false)} />
+                </Modal>
+
+                <Modal
+                    isOpen={!!selectedStore}
+                    onClose={() => setSelectedStore(null)}
+                    title={selectedStore ? `Store: ${selectedStore.name}` : 'Store Details'}
+                >
+                    {selectedStore && <StoreDetail store={selectedStore} />}
+                </Modal>
+                <Modal
+                    isOpen={!!selectedProduct}
+                    onClose={() => setSelectedProduct(null)}
+                    title={selectedProduct ? `Product: ${selectedProduct.name}` : 'Product Details'}
+                >
+                    {selectedProduct && <ProductDetail product={selectedProduct} />}
+                </Modal>
+                <Modal
+                    isOpen={!!selectedCustomer}
+                    onClose={() => setSelectedCustomer(null)}
+                    title={selectedCustomer ? `Customer: ${selectedCustomer.name}` : 'Customer Details'}
+                >
+                    {selectedCustomer && <CustomerDetail customer={selectedCustomer} />}
                 </Modal>
             <UserMap />
         </div>

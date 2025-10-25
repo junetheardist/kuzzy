@@ -4,6 +4,7 @@ import { Store } from "@/types/Store";
 
 interface StoreCardProps {
   store: Store;
+  onClick?: () => void;
 }
 
 // 🟢 Default detailed variant
@@ -61,9 +62,9 @@ export const StoreCard = ({ store }: StoreCardProps) => {
 };
 
 // 🟣 Compact variant with store logo
-export const CompactStoreCard = ({ store }: StoreCardProps) => {
+export const CompactStoreCard = ({ store, onClick }: StoreCardProps) => {
   return (
-    <div className="flex cursor-pointer items-center gap-4 bg-white p-3 hover:bg-gray-100 transition">
+    <div onClick={onClick} className="flex cursor-pointer items-center gap-4 bg-white p-3 hover:bg-gray-100 transition">
       <div className="relative w-14 h-14 shrink-0 overflow-hidden bg-gray-100 rounded-lg">
         <Image
           src={store.logo}

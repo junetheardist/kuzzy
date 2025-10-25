@@ -4,6 +4,7 @@ import { ListView, ColumnDefinition } from '@/components/ui/ListView';
 
 interface TableProductListProps {
   products: Product[];
+  onItemClick?: (product: Product) => void;
 }
 
 const productColumns: ColumnDefinition<Product>[] = [
@@ -30,6 +31,6 @@ const productColumns: ColumnDefinition<Product>[] = [
   { key: 'stock', header: 'Stock', render: (product) => <span className="text-gray-700">{product.stock}</span> },
 ];
 
-export const TableProductList = ({ products }: TableProductListProps) => {
-  return <ListView items={products.slice(0, 15)} columns={productColumns} emptyStateMessage="No products found." />;
+export const TableProductList = ({ products, onItemClick }: TableProductListProps) => {
+  return <ListView items={products.slice(0, 15)} columns={productColumns} onItemClick={onItemClick} emptyStateMessage="No products found." />;
 };
