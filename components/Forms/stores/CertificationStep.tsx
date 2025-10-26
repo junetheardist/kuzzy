@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
-import { FileUpload } from '@/components/Forms/stores/FileUpload';
+import { FileUpload } from '@/components/Forms/FileUpload';
 
 export const CertificationStep = () => {
   const { register } = useFormContext();

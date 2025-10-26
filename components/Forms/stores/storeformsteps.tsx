@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { FileUpload } from '@/components/Forms/stores/FileUpload';
+import { FileUpload } from '@/components/Forms/FileUpload';
 
 // --- StoreInfoStep ---
 export const StoreInfoStep = () => {

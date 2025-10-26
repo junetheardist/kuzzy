@@ -23,11 +23,13 @@ import { deliveryAgents } from '@/data/deliveryAgents';
 import { ProductDetail } from '@/components/products/ProductDetail';
 import { CustomerDetail } from '@/components/customers/CustomerDetail';
 import { TableProductList } from '@/components/products/TableProductList';
+import { CompactProductList } from '@/components/products/ProductList';
 import { CompactCustomerList } from '@/components/customers/CustomerList';
 import { TableCustomerList } from '@/components/customers/TableCustomerList';
-import { CompactDeliveryAgentList } from '@/components/deliveryAgent/DeliveryAgentList'
+import { CompactDeliveryAgentList } from '@/components/deliveryAgent/DeliveryAgentList';
 import { DeliveryAgentDetail } from '@/components/deliveryAgent/DeliveryAgentDetail';
 import { AddStoreForm } from '@/components/Forms/stores/AddStoreForm';
+import { AddProductForm } from '@/components/Forms/products/AddProductForm';
 import { Button } from '@/components/ui/Button';
 import { SearchInput } from '@/components/ui/SearchInput';
 
@@ -44,6 +46,7 @@ export default function Home() {
     const [searchQuery, setSearchQuery] = useState('');
     const [previewSearchQuery, setPreviewSearchQuery] = useState('');
     const [isAddStoreModalOpen, setAddStoreModalOpen] = useState(false);
+    const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
 
     const handleShowPreview = (type: string, data: any) => {
         setPreview({ type, data });
@@ -117,6 +120,12 @@ export default function Home() {
             agent.vehicleType.toLowerCase().includes(searchQuery.toLowerCase())
         ), [searchQuery]);
 
+    const filteredMainProducts = useMemo(() =>
+        products.filter(product =>
+            product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchQuery.toLowerCase())
+        ), [searchQuery]);
+
     const filteredRegions = useMemo(() => {
         const lowerQuery = searchQuery.toLowerCase();
         if (!lowerQuery) return { regions, states, lgas, communities, streets };
@@ -127,8 +136,8 @@ export default function Home() {
         return { regions: filteredRegions, states: filteredStates, lgas: filteredLgas, communities, streets };
     }, [searchQuery]);
     return (
-        <div className='w-screen relative flex items-center justify-center  h-screen '>
-            <div className='absolute flex  top-5  outline p-6  gap-4 h-[90vh] w-[90vw] rounded-2xl  z-10 pointer-events-none '>
+        <div className='w-full relative flex justify-center'>
+            <div className='flex pt-6 gap-4 h-[calc(100vh-80px)] w-[90vw] z-10 pointer-events-none'>
                 <div className='w-md h-full flex flex-col rounded-xl relative z-20 pointer-events-auto bg-white overflow-hidden'>
                     <div className="flex border-b border-gray-200">
                         <button
@@ -148,6 +157,12 @@ export default function Home() {
                             className={`flex-1 py-2 text-sm font-semibold transition-colors ${activeTab === 'locations' ? 'bg-gray-100 text-gray-800' : 'text-gray-500 hover:bg-gray-50'}`}
                         >
                             Locations
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('products')}
+                            className={`flex-1 py-2 text-sm font-semibold transition-colors ${activeTab === 'products' ? 'bg-gray-100 text-gray-800' : 'text-gray-500 hover:bg-gray-50'}`}
+                        >
+                            Products
                         </button>
                         <button
                             onClick={() => setActiveTab('customers')}
@@ -179,6 +194,16 @@ export default function Home() {
                                     </Button>
                                 </div>
                                 <CompactStoreList stores={filteredStores} onStoreSelect={setSelectedStore} />
+                            </div>
+                        )}
+                        {activeTab === 'products' && (
+                            <div className="py-4">
+                                <div className="px-4 mb-2">
+                                    <Button onClick={() => setAddProductModalOpen(true)} className="w-full">
+                                        <Plus className="w-4 h-4 mr-2" /> Add Product
+                                    </Button>
+                                </div>
+                                <CompactProductList products={filteredMainProducts} onProductSelect={setSelectedProduct} />
                             </div>
                         )}
                         {activeTab === 'locations' && <RegionFilterView onShowPreview={handleShowPreview} {...filteredRegions} />}
@@ -231,6 +256,13 @@ export default function Home() {
                     onClose={() => setAddStoreModalOpen(false)}
                     title="Add a New Store">
                     <AddStoreForm onClose={() => setAddStoreModalOpen(false)} />
+                </Modal>
+
+                <Modal
+                    isOpen={isAddProductModalOpen}
+                    onClose={() => setAddProductModalOpen(false)}
+                    title="Add a New Product">
+                    <AddProductForm onClose={() => setAddProductModalOpen(false)} />
                 </Modal>
 
                 <Modal

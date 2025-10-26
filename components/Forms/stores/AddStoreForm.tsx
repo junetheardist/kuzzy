@@ -64,18 +64,19 @@ export const AddStoreForm: React.FC<AddStoreFormProps> = ({ onClose }) => {
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-6" aria-label="Tabs">
             {steps.map((step) => (
-              <button
+              <Button
                 key={step.id}
                 type="button"
                 onClick={() => setCurrentStep(step.id)}
-                className={`${
+                variant="ghost"
+                className={`whitespace-nowrap !rounded-b-none border-b-2 ${
                   currentStep === step.id
                     ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm`}
+                    : 'border-transparent text-gray-500 hover:border-gray-300'
+                }`}
               >
                 {step.name}
-              </button>
+              </Button>
             ))}
           </nav>
         </div>

@@ -13,7 +13,7 @@ const productColumns: ColumnDefinition<Product>[] = [
     header: 'Product Name',
     render: (product) => (
       <div className="flex items-center gap-3">
-        <img src={product.image} alt={product.name} className="w-8 h-8 rounded-md object-cover" />
+        <img src={product.gallery.coverImageUrl} alt={product.name} className="w-8 h-8 rounded-md object-cover" />
         <span className="font-medium text-gray-800">{product.name}</span>
       </div>
     ),
