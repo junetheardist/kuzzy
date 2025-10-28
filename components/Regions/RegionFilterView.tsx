@@ -85,7 +85,7 @@ export const RegionFilterView = ({ onShowPreview }: RegionFilterViewProps) => {
   ].filter(Boolean) as { name: string, action: () => void }[];
 
   return (
-    <div className="p-4 h-full flex flex-col">
+    <div className="p-4 h-full flex relative flex-col">
       {/* Breadcrumb Navigation */}
       <div className="flex items-center text-sm text-gray-500 mb-4 flex-wrap">
         {breadcrumbs.map((crumb, index) => (
@@ -99,14 +99,14 @@ export const RegionFilterView = ({ onShowPreview }: RegionFilterViewProps) => {
       </div>
 
       {/* Data Type Filter */}
-      <div className="mb-4 flex items-center justify-center rounded-lg bg-gray-100 p-1">
+      <div className="mb-4 flex flex-col bg-white absolute right-3 bottom-4 gap-4 items-center justify-start  rounded-lg ">
         {tabOptions.map((option) => (
           <button
             key={option.value}
             onClick={() => setDisplayTotalFor(option.value)}
-            className={`flex-1 rounded-md p-2 text-sm font-medium transition-colors ${
+            className={` rounded-full p-3   text-sm font-medium transition-colors ${
               displayTotalFor === option.value
-                ? 'bg-white text-gray-800 shadow-sm'
+                ? 'bg-orange-800 text-white '
                 : 'text-gray-500 hover:bg-gray-200'
             }`}
             title={option.value.charAt(0).toUpperCase() + option.value.slice(1)}
@@ -118,7 +118,7 @@ export const RegionFilterView = ({ onShowPreview }: RegionFilterViewProps) => {
 
       {/* Results Grid */}
       {list.length > 0 ? (
-        <div className="flex flex-col gap-2 flex-1 overflow-y-auto pb-4">
+        <div className="flex flex-col gap-2 flex-1 h-full  overflow-y-auto pb-4">
           {list.map((item) => (
             <RegionCard
               key={item.id}
