@@ -132,6 +132,8 @@ export default function UiComponents() {
 
 
             </div>
+
+            
             <Modal
                 isOpen={!!selectedOrder}
                 onClose={() => setSelectedOrder(null)}
