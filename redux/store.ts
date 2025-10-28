@@ -1,11 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit';
 import vendorReducer from './vendorSlice';
 import stepReducer from './stepSlice';
+import authReducer from './authSlice';
 
 export const store = configureStore({
     reducer: {
         vendor: vendorReducer,
         step: stepReducer,
+        auth: authReducer,
     },
 });
 
