@@ -61,13 +61,18 @@ export async function POST(req: NextRequest) {
         const token = generateToken(user._id.toString());
 
         return NextResponse.json(
-            {message: 'Email verified successfully', token},
+            {message: 'Email verified successfully', token, user: {id: user._id, email: user.email}},
             {status: 200}
         );
     } catch (error) {
         console.error('OTP verification error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        
         return NextResponse.json(
-            {error: 'Internal server error'},
+            {
+                error: 'Internal server error',
+                details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+            },
             {status: 500}
         );
     }

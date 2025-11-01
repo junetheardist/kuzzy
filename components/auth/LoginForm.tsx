@@ -38,7 +38,7 @@ export default function LoginForm() {
     }, [error, message])
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex max-w-2xl  outine rounded-xl  bg-white p-10 min-w-xl  flex-col gap-3">
             <h2 className="text-2xl font-semibold mb-2 text-center">Login</h2>
 
             <input
@@ -76,7 +76,7 @@ export default function LoginForm() {
 
             <p className="text-sm text-center">
                 Don’t have an account?{" "}
-                <Link href="/auth/register" className="text-blue-600">
+                <Link href="/register" className="text-blue-600">
                     Register
                 </Link>
             </p>

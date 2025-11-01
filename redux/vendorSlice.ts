@@ -31,6 +31,8 @@ export interface RegistrationDocuments {
 }
 
 export interface Vendor {
+    address: any;
+    id: any;
     _id?: string;
     userId: string;
     logo: string;

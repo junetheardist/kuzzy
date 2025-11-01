@@ -119,4 +119,21 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Tab Button Styles */
+  .tab-button {
+    @apply transition-all duration-200;
+  }
+
+  .tab-button-active {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+  }
+
+  .tab-button-inactive {
+    @apply bg-white text-gray-600 border border-gray-300 hover:bg-gray-50 hover:text-gray-800;
+  }
+
+  .tab-button-inactive:disabled {
+    @apply bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed;
+  }
 }

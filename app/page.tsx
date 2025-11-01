@@ -1,16 +1,15 @@
 'use client';
 import React, {useEffect, useMemo, useState} from 'react';
-import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/orderList"
+import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/orderList";
 import {CompactStoreList} from "@/components/stores/StoreList";
 import {RegionFilterView} from '@/components/Regions/RegionFilterView';
 import {regions} from '@/data/regions';
 import {orders} from '@/data/orders';
-import {stores} from '@/data/stores';
 import {OrderDetail} from '@/components/orders/OrderDetail';
 import {Order} from '@/types/order';
 import {Modal} from '@/components/ui/Modal';
 import {AnimatePresence, motion} from 'framer-motion';
-import {X} from 'lucide-react';
+import {Plus, X} from 'lucide-react';
 import {TableStoreList} from '@/components/stores/StoreListView';
 import {products} from '@/data/products';
 import {customers} from '@/data/customers'; // Import the new customer data
@@ -19,11 +18,13 @@ import {TableCustomerList} from '@/components/customers/TableCustomerList';
 import GoogleMapView from "@/components/dashboard/GoogleMapView";
 import {useAppDispatch, useAppSelector} from "@/redux/hooks";
 import {fetchVendors} from "@/redux/vendorSlice";
+import {AddStoreForm} from "@/components/Forms/stores/AddStoreForm";
 
 
-export default function HOme() {
+export default function Home() {
     const [expanded, setExpanded] = useState(false); // This state is no longer used for the modal, but keeping it for now.
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [isAddStoreModalOpen, setIsAddStoreModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('orders');
     const [preview, setPreview] = useState<{ type: string; data: any } | null>(null);
 
@@ -50,7 +51,7 @@ export default function HOme() {
 
         switch (type) {
             case 'stores':
-                const filteredStores = stores.filter(store => statesToFilter.includes(store.address.state));
+                const filteredStores = vendors.filter(store => statesToFilter.includes(store.address.state));
                 return {title: `Stores in ${regionName}`, content: <TableStoreList stores={vendors}/>};
             case 'products':
                 // Products are not tied to a region in the current data model, so we show all.
@@ -62,7 +63,7 @@ export default function HOme() {
                     content: <TableCustomerList customers={filteredCustomers}/>
                 };
             case 'orders':
-                const storeIdsInRegion = stores
+                const storeIdsInRegion = vendors
                     .filter(store => statesToFilter.includes(store.address.state))
                     .map(store => store.id);
                 const filteredOrders = orders.filter(order => storeIdsInRegion.includes(order.storeId));
@@ -70,10 +71,10 @@ export default function HOme() {
             default:
                 return null;
         }
-    }, [preview]);
+    }, [preview, vendors]);
 
     return (
-        <div className='w-screen relative flex items-center justify-center  h-screen '>
+        <div className='w-screen relative flex items-center justify-center h-screen '>
             <div
                 className='absolute flex  top-5  outline p-6  gap-4 h-[90vh] w-[90vw] rounded-2xl  z-10 pointer-events-none '>
                 <div
@@ -102,7 +103,15 @@ export default function HOme() {
                         {activeTab === 'orders' &&
                             <div className="py-4"><CompactOrderList orders={orders} onOrderSelect={setSelectedOrder}/>
                             </div>}
-                        {activeTab === 'stores' && <div className="py-4"><CompactStoreList stores={vendors}/></div>}
+                        {activeTab === 'stores' && (
+                            <div className="py-4 relative h-full">
+                                <CompactStoreList stores={vendors}/>
+                                <button
+                                    onClick={() => setIsAddStoreModalOpen(true)}
+                                    className="absolute bottom-4 right-4 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-colors flex items-center justify-center">
+                                    <Plus className="w-6 h-6"/>
+                                </button>
+                            </div>)}
                         {activeTab === 'locations' && <RegionFilterView onShowPreview={handleShowPreview}/>}
                     </div>
                 </div>
@@ -144,6 +153,13 @@ export default function HOme() {
                 }}/>} {/* Changed from OrderDetailsPopup */}
             </Modal>
             <GoogleMapView/>
+
+            <Modal
+                isOpen={isAddStoreModalOpen}
+                onClose={() => setIsAddStoreModalOpen(false)}
+                title="Add New Store">
+                <AddStoreForm onClose={() => setIsAddStoreModalOpen(false)}/>
+            </Modal>
         </div>
 
     );
