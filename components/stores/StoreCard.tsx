@@ -6,23 +6,37 @@ interface StoreCardProps {
     store: Vendor;
 }
 
+// Placeholder image for missing images
+const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23e5e7eb' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E";
+
 // 🟢 Default detailed variant
 export const StoreCard = ({store}: StoreCardProps) => {
+    const coverImage = (store?.gallery as Gallery)?.coverImageUrl || PLACEHOLDER_IMAGE;
+    const logo = store?.logo || PLACEHOLDER_IMAGE;
+    const shopAddress = store?.shopAddress as Address;
+    const shopName = store?.shopName || "Store";
+    const ownerName = store?.ownerName || "Unknown";
+    const dateJoined = store?.dateJoined ? new Date(store.dateJoined).toLocaleDateString() : "N/A";
+
     return (
         <div
             className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition cursor-pointer">
-            <div className="relative h-32 w-full mb-3 rounded-lg overflow-hidden">
+            <div className="relative h-32 w-full mb-3 rounded-lg overflow-hidden bg-gray-100">
                 <Image
-                    src={(store.gallery as Gallery)?.coverImageUrl}
-                    alt={store?.shopName}
+                    src={coverImage}
+                    alt={shopName}
                     fill
                     className="object-cover"
+                    onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.src = PLACEHOLDER_IMAGE;
+                    }}
                 />
             </div>
             <div className="flex justify-between items-start mb-2">
                 <div>
-                    <h3 className="font-semibold text-gray-800">{store?.shopName}</h3>
-                    <p className="text-sm text-gray-500 capitalize">{store?.category}</p>
+                    <h3 className="font-semibold text-gray-800">{shopName}</h3>
+                    <p className="text-sm text-gray-500 capitalize">{store?.category || "N/A"}</p>
                 </div>
                 <span
                     className={`text-xs px-2 py-1 rounded-full capitalize ${
@@ -33,27 +47,33 @@ export const StoreCard = ({store}: StoreCardProps) => {
                                 : "bg-red-100 text-red-700"
                     }`}
                 >
-          {store?.status}
+          {store?.status || "inactive"}
         </span>
             </div>
 
             <p className="text-sm text-gray-600 mb-3">
-                {(store?.shopAddress as Address)?.street}, {(store?.shopAddress as Address)?.city}
+                {shopAddress?.street && shopAddress?.city 
+                    ? `${shopAddress.street}, ${shopAddress.city}` 
+                    : shopAddress?.city || "Address not available"}
             </p>
 
             <div className="flex items-center gap-2">
                 <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-100">
                     <Image
-                        src={store?.logo}
-                        alt={`${store?.shopName} logo`}
+                        src={logo}
+                        alt={`${shopName} logo`}
                         fill
                         className="object-contain p-1"
+                        onError={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            img.src = PLACEHOLDER_IMAGE;
+                        }}
                     />
                 </div>
                 <div>
-                    <p className="text-sm font-medium text-gray-800">{store?.ownerName}</p>
+                    <p className="text-sm font-medium text-gray-800">{ownerName}</p>
                     <p className="text-xs text-gray-500">
-                        Joined: {new Date(store?.dateJoined).toLocaleDateString()}
+                        Joined: {dateJoined}
                     </p>
                 </div>
             </div>
@@ -63,25 +83,34 @@ export const StoreCard = ({store}: StoreCardProps) => {
 
 // 🟣 Compact variant with store logo
 export const CompactStoreCard = ({store}: StoreCardProps) => {
+    const logo = store?.logo || PLACEHOLDER_IMAGE;
+    const shopName = store?.shopName || "Store";
+    const ownerAddress = store?.ownerAddress as Address;
+    const city = ownerAddress?.city || "Unknown";
+
     return (
         <div className="flex cursor-pointer items-center gap-4 bg-white p-3 hover:bg-gray-100 transition">
             <div className="relative w-14 h-14 shrink-0 overflow-hidden bg-gray-100 rounded-lg">
                 <Image
-                    src={store?.logo}
-                    alt={store?.shopName}
+                    src={logo}
+                    alt={shopName}
                     fill
-                    className="object-contain p-1 text-[9px] text-center"
+                    className="object-contain p-1"
+                    onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.src = PLACEHOLDER_IMAGE;
+                    }}
                 />
             </div>
 
             <div className="flex-1 min-w-0">
-                <p className="font-semibold truncate text-sm">{store?.shopName}</p>
-                <p className="text-xs text-gray-500 capitalize">{store?.category}</p>
+                <p className="font-semibold truncate text-sm">{shopName}</p>
+                <p className="text-xs text-gray-500 capitalize">{store?.category || "N/A"}</p>
             </div>
 
             <div className="text-right">
-                <p className="text-sm font-medium text-gray-800">{(store?.ownerAddress as Address)?.city}</p>
-                <p className="text-xs text-gray-500">{store?.status}</p>
+                <p className="text-sm font-medium text-gray-800">{city}</p>
+                <p className="text-xs text-gray-500">{store?.status || "inactive"}</p>
             </div>
         </div>
     );
