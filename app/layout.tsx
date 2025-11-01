@@ -1,6 +1,7 @@
 import React from 'react';
 import './globals.css';
 import { Navbar } from '@/components/Navbar';
+import Provider from '@/redux/provider';
 
 export const metadata = {
   title: 'Kuzzy Admin Dashboard',
@@ -12,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-gray-50 min-h-screen overflow-clip w-screen ">
         <Navbar />
-        <main>{children}</main>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

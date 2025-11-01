@@ -1,6 +1,6 @@
 'use client';
 import React, {useEffect, useMemo, useState} from 'react';
-import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/OrderList";
+import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/orderList";
 import {CompactStoreList} from "@/components/stores/StoreList";
 import {RegionFilterView} from '@/components/Regions/RegionFilterView';
 import {regions} from '@/data/regions';
