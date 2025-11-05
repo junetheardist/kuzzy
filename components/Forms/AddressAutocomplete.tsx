@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import { Input } from '@/components/ui/Input';
 import { useAddressAutocomplete } from '@/hooks/useAddressAutocomplete';
 
 export interface AddressAutocompleteProps {

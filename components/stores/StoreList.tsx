@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {CompactStoreCard, StoreCard} from "./StoreCard";
 import {Vendor} from "@/redux/vendorSlice";
 import { StoreDetailsModal } from "./StoreDetailsModal";
+import { EditStoreModal } from "./EditStoreModal";
 
 interface StoreListProps {
     stores: Vendor[];
@@ -11,6 +12,7 @@ interface StoreListProps {
 /* 🟢 Default Grid View (uses detailed StoreCard) */
 export const StoreList = ({stores}: StoreListProps) => {
     const [selectedStore, setSelectedStore] = useState<Vendor | null>(null);
+    const [editingStore, setEditingStore] = useState<Vendor | null>(null);
     
     return (
         <>
@@ -25,6 +27,15 @@ export const StoreList = ({stores}: StoreListProps) => {
                 store={selectedStore} 
                 isOpen={selectedStore !== null}
                 onClose={() => setSelectedStore(null)}
+                onEdit={(store) => {
+                    setEditingStore(store);
+                    setSelectedStore(null);
+                }}
+            />
+            <EditStoreModal
+                store={editingStore}
+                isOpen={editingStore !== null}
+                onClose={() => setEditingStore(null)}
             />
         </>
     );
@@ -33,6 +44,7 @@ export const StoreList = ({stores}: StoreListProps) => {
 /* 🟣 Compact List View (uses CompactStoreCard) */
 export const CompactStoreList = ({stores}: StoreListProps) => {
     const [selectedStore, setSelectedStore] = useState<Vendor | null>(null);
+    const [editingStore, setEditingStore] = useState<Vendor | null>(null);
     
     return (
         <>
@@ -47,6 +59,15 @@ export const CompactStoreList = ({stores}: StoreListProps) => {
                 store={selectedStore} 
                 isOpen={selectedStore !== null}
                 onClose={() => setSelectedStore(null)}
+                onEdit={(store) => {
+                    setEditingStore(store);
+                    setSelectedStore(null);
+                }}
+            />
+            <EditStoreModal
+                store={editingStore}
+                isOpen={editingStore !== null}
+                onClose={() => setEditingStore(null)}
             />
         </>
     );

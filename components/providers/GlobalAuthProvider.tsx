@@ -50,9 +50,13 @@ export const GlobalAuthProvider: React.FC<GlobalAuthProviderProps> = ({ children
     // Check if current route is public
     const isPublicRoute = PUBLIC_ROUTES.some(route => pathname?.startsWith(route));
 
-    // Redirect to login if not authenticated and trying to access protected route
+    // If user IS authenticated, allow access to ANY page (including /Ui and protected routes)
+    // If user is NOT authenticated and trying to access protected route, redirect to login
     if (!userId && !isPublicRoute) {
+      console.log('🚫 Not authenticated, redirecting to /login from:', pathname);
       router.push('/login');
+    } else if (userId) {
+      console.log('✅ Authenticated, allowing access to:', pathname);
     }
   }, [userId, pathname, router]);
 

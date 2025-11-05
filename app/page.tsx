@@ -1,6 +1,6 @@
 'use client';
 import React, {useEffect, useMemo, useState} from 'react';
-import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/OrderList";
+import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/orderList";
 import {CompactStoreList} from "@/components/stores/StoreList";
 import {RegionFilterView} from '@/components/Regions/RegionFilterView';
 import {regions} from '@/data/regions';
@@ -51,21 +51,27 @@ export default function Home() {
 
         switch (type) {
             case 'stores':
-                const filteredStores = vendors.filter(store => statesToFilter.includes(store.address.state));
-                return {title: `Stores in ${regionName}`, content: <TableStoreList stores={vendors}/>};
+                const filteredStores = vendors.filter(store => {
+                    const shopAddr = typeof store.shopAddress === 'object' ? store.shopAddress : null;
+                    return statesToFilter.includes(shopAddr?.state || '');
+                });
+                return {title: `Stores in ${regionName}`, content: <TableStoreList stores={filteredStores}/>};
             case 'products':
                 // Products are not tied to a region in the current data model, so we show all.
                 return {title: `Products in ${regionName}`, content: <TableProductList products={products}/>};
             case 'customers':
-                const filteredCustomers = customers.filter(customer => statesToFilter.includes(customer.address.state));
+                const filteredCustomers = customers.filter(customer => statesToFilter.includes(customer.address?.state || ''));
                 return {
                     title: `Customers in ${regionName}`,
                     content: <TableCustomerList customers={filteredCustomers}/>
                 };
             case 'orders':
                 const storeIdsInRegion = vendors
-                    .filter(store => statesToFilter.includes(store.address.state))
-                    .map(store => store.id);
+                    .filter(store => {
+                        const shopAddr = typeof store.shopAddress === 'object' ? store.shopAddress : null;
+                        return statesToFilter.includes(shopAddr?.state || '');
+                    })
+                    .map(store => store._id || store.id);
                 const filteredOrders = orders.filter(order => storeIdsInRegion.includes(order.storeId));
                 return {title: `Orders in ${regionName}`, content: <PreviewTableOrderList orders={filteredOrders}/>};
             default:
@@ -142,7 +148,7 @@ export default function Home() {
 
             </div>
 
-
+            
             <Modal
                 isOpen={!!selectedOrder}
                 onClose={() => setSelectedOrder(null)}
@@ -152,7 +158,10 @@ export default function Home() {
                     throw new Error('Function not implemented.');
                 }}/>} {/* Changed from OrderDetailsPopup */}
             </Modal>
-            <GoogleMapView/>
+            <GoogleMapView 
+                showStores={activeTab === 'stores'} 
+                stores={vendors}
+            />
 
             <Modal
                 isOpen={isAddStoreModalOpen}

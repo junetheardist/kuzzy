@@ -129,7 +129,7 @@ export const updateVendor = createAsyncThunk<
 >(
     'vendor/updateVendor',
     async (vendorData, thunkAPI) => {
-        const response = await fetch('/api/vendor', {
+        const response = await fetch('/api/vendor/update', {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(vendorData),

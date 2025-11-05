@@ -9,7 +9,7 @@ import { deliveryAgents } from '@/data/deliveryAgents';
  * A store's location is determined by its `address.state`.
  */
 export const getStoreCount = (locations: string[]): number => {
-  return stores.filter(store => locations.includes(store.address.state)).length;
+  return stores.filter(store => locations.includes(store.address?.state || '')).length;
 };
 
 /**
@@ -34,7 +34,7 @@ export const getDeliveryAgentCount = (locations: string[]): number => {
  */
 export const getOrderCount = (locations: string[]): number => {
   const storeIdsInLocation = stores
-    .filter(store => locations.includes(store.address.state))
+    .filter(store => locations.includes(store.address?.state || ''))
     .map(store => store.id);
   return orders.filter(order => storeIdsInLocation.includes(order.storeId)).length;
 };

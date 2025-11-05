@@ -1,7 +1,7 @@
 // src/components/stores/StoreDetailsModal.tsx
 import React, { useState } from "react";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { X, Edit } from "lucide-react";
 import { Address, Gallery, Vendor } from "@/redux/vendorSlice";
 import { products } from "@/data/products";
 
@@ -9,6 +9,7 @@ interface StoreDetailsModalProps {
   store: Vendor | null;
   isOpen: boolean;
   onClose: () => void;
+  onEdit?: (store: Vendor) => void;
 }
 
 // Placeholder image for missing images
@@ -20,6 +21,7 @@ export const StoreDetailsModal: React.FC<StoreDetailsModalProps> = ({
   store,
   isOpen,
   onClose,
+  onEdit,
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>("details");
 
@@ -45,13 +47,27 @@ export const StoreDetailsModal: React.FC<StoreDetailsModalProps> = ({
             <h2 className="text-lg font-semibold text-gray-800">{store.shopName}</h2>
             <p className="text-sm text-gray-600 capitalize mt-1">{store.category || "Store"}</p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-800 transition-colors"
-            title="Close modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {onEdit && (
+              <button
+                onClick={() => {
+                  onEdit(store);
+                  onClose();
+                }}
+                className="p-2 rounded-full hover:bg-indigo-50 text-indigo-600 hover:text-indigo-700 transition-colors"
+                title="Edit store"
+              >
+                <Edit className="w-5 h-5" />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-800 transition-colors"
+              title="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Tab Navigation */}
