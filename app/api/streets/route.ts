@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     try {
         await connectDB();
         const body = await request.json();
-        const {name, country, region, state, city} = body;
+        console.log(body);
+        const {name, parentId3: country, parentId2: region, parentId1: state, parentId: city} = body;
         if (!name || !country || !region || !state || !city) return NextResponse.json({
             success: false,
             error: "Missing required fields"

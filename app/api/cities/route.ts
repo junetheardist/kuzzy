@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     try {
         await connectDB();
         const body = await request.json();
-        const {name, country: countryId, region: regionId, state: stateId} = body;
+        const {name, parentId2: countryId, parentId1: regionId, parentId: stateId} = body;
         if (!name || !countryId || !regionId || !stateId) return NextResponse.json({
             success: false,
             error: "name, country, region and state are required"

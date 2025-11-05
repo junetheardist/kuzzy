@@ -3,10 +3,13 @@ import connectDB from "@/lib/mongodb";
 import Country from "@/models/Country";
 import mongoose from "mongoose";
 
-export async function GET(_request: Request, {params}: { params: { id: string } }) {
+export async function GET(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
+
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"
@@ -21,10 +24,12 @@ export async function GET(_request: Request, {params}: { params: { id: string } 
     }
 }
 
-export async function PUT(request: Request, {params}: { params: { id: string } }) {
+export async function PUT(request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"
@@ -40,10 +45,12 @@ export async function PUT(request: Request, {params}: { params: { id: string } }
     }
 }
 
-export async function DELETE(_request: Request, {params}: { params: { id: string } }) {
+export async function DELETE(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"

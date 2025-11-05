@@ -2,30 +2,37 @@ import {NextResponse} from "next/server";
 import connectDB from "@/lib/mongodb";
 import City from "@/models/City";
 import State from "@/models/State";
+import Street from "@/models/Street";
 import mongoose from "mongoose";
 
-export async function GET(_request: Request, {params}: { params: { id: string } }) {
+export async function GET(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
+        Street;
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"
         }, {status: 400});
 
-        const city = await City.findById(id).populate("streets").populate("state").populate("region").populate("country");
+        const city = await City.find({state: id}).populate("streets").populate("state").populate("region").populate("country");
         if (!city) return NextResponse.json({success: false, error: "Not found"}, {status: 404});
 
         return NextResponse.json({success: true, data: city}, {status: 200});
     } catch (err) {
+        console.log(err)
         return NextResponse.json({success: false, error: (err as Error).message}, {status: 500});
     }
 }
 
-export async function PUT(request: Request, {params}: { params: { id: string } }) {
+export async function PUT(request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         const updates = await request.json();
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
@@ -52,10 +59,12 @@ export async function PUT(request: Request, {params}: { params: { id: string } }
     }
 }
 
-export async function DELETE(_request: Request, {params}: { params: { id: string } }) {
+export async function DELETE(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"

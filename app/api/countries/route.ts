@@ -5,7 +5,7 @@ import Country from "@/models/Country";
 export async function GET() {
     try {
         await connectDB();
-        const countries = await Country.find().populate("regions").lean();
+        const countries = await Country.find().lean();
         return NextResponse.json({success: true, data: countries}, {status: 200});
     } catch (err) {
         return NextResponse.json({success: false, error: (err as Error).message}, {status: 500});

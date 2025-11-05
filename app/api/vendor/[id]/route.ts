@@ -5,12 +5,15 @@ import {User} from "@/models/User";
 // GET /api/vendor/[id]
 export async function GET(
     req: NextRequest,
-    {params}: { params: { id: string } }
+    context: {
+        params: Promise<{ id: string }>
+    }
 ) {
     try {
+        const {id} = await context.params;
         await dbConnect();
 
-        const vendor = await User.findById(params.id).select(
+        const vendor = await User.findById(id).select(
             "-password -otp -otpExpiry -resetToken -resetTokenExpiry"
         );
 

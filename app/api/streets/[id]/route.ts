@@ -4,16 +4,18 @@ import Street from "@/models/Street";
 import City from "@/models/City";
 import mongoose from "mongoose";
 
-export async function GET(_request: Request, {params}: { params: { id: string } }) {
+export async function GET(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"
         }, {status: 400});
 
-        const street = await Street.findById(id).populate("city").populate("state").populate("region").populate("country");
+        const street = await Street.find({city: id}).populate("city").populate("state").populate("region").populate("country");
         if (!street) return NextResponse.json({success: false, error: "Not found"}, {status: 404});
 
         return NextResponse.json({success: true, data: street}, {status: 200});
@@ -22,10 +24,12 @@ export async function GET(_request: Request, {params}: { params: { id: string } 
     }
 }
 
-export async function PUT(request: Request, {params}: { params: { id: string } }) {
+export async function PUT(request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         const updates = await request.json();
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
@@ -52,10 +56,12 @@ export async function PUT(request: Request, {params}: { params: { id: string } }
     }
 }
 
-export async function DELETE(_request: Request, {params}: { params: { id: string } }) {
+export async function DELETE(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"

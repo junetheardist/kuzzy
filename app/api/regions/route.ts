@@ -18,7 +18,9 @@ export async function POST(request: Request) {
     try {
         await connectDB();
         const body = await request.json();
-        const {name, country: countryId} = body;
+
+        console.log(body);
+        const {name, parentId: countryId} = body;
         if (!name || !countryId) return NextResponse.json({
             success: false,
             error: "name and country are required"

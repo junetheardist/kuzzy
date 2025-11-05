@@ -2,18 +2,22 @@ import {NextResponse} from "next/server";
 import connectDB from "@/lib/mongodb";
 import State from "@/models/State";
 import Region from "@/models/Region";
+import City from "@/models/City";
 import mongoose from "mongoose";
 
-export async function GET(_request: Request, {params}: { params: { id: string } }) {
+export async function GET(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
+    City;
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"
         }, {status: 400});
 
-        const state = await State.findById(id).populate("cities").populate("region").populate("country");
+        const state = await State.find({region: id}).populate("cities").populate("region").populate("country");
         if (!state) return NextResponse.json({success: false, error: "Not found"}, {status: 404});
 
         return NextResponse.json({success: true, data: state}, {status: 200});
@@ -22,10 +26,12 @@ export async function GET(_request: Request, {params}: { params: { id: string } 
     }
 }
 
-export async function PUT(request: Request, {params}: { params: { id: string } }) {
+export async function PUT(request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         const updates = await request.json();
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
@@ -52,10 +58,12 @@ export async function PUT(request: Request, {params}: { params: { id: string } }
     }
 }
 
-export async function DELETE(_request: Request, {params}: { params: { id: string } }) {
+export async function DELETE(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"

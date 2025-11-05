@@ -4,28 +4,34 @@ import Region from "@/models/Region";
 import Country from "@/models/Country";
 import mongoose from "mongoose";
 
-export async function GET(_request: Request, {params}: { params: { id: string } }) {
+export async function GET(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
+
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"
         }, {status: 400});
 
-        const region = await Region.findById(id).populate("states").populate("country");
+        const region = await Region.find({country: id}).populate("states").populate("country");
         if (!region) return NextResponse.json({success: false, error: "Not found"}, {status: 404});
 
         return NextResponse.json({success: true, data: region}, {status: 200});
     } catch (err) {
+        console.log(err)
         return NextResponse.json({success: false, error: (err as Error).message}, {status: 500});
     }
 }
 
-export async function PUT(request: Request, {params}: { params: { id: string } }) {
+export async function PUT(request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         const updates = await request.json();
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
@@ -52,10 +58,12 @@ export async function PUT(request: Request, {params}: { params: { id: string } }
     }
 }
 
-export async function DELETE(_request: Request, {params}: { params: { id: string } }) {
+export async function DELETE(_request: Request, context: {
+    params: Promise<{ id: string }>
+}) {
     try {
         await connectDB();
-        const {id} = params;
+        const {id} = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) return NextResponse.json({
             success: false,
             error: "Invalid id"
