@@ -90,8 +90,7 @@ export const StoreInfoStep = () => {
 
             {/* Address Autocomplete with Generate Button */}
             <AddressAutocomplete
-                label="Search Address"
-                placeholder="Type to search for address..."
+                placeholder="Search address"
                 value={shopAddressQuery}
                 onChange={setShopAddressQuery}
                 onSelectSuggestion={handleShopAddressSuggestion}
