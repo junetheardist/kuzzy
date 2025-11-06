@@ -121,7 +121,7 @@ export default function Home() {
                         {activeTab === 'locations' && <RegionFilterView onShowPreview={handleShowPreview}/>}
                     </div>
                 </div>
-
+{/* ok */}
                 <AnimatePresence>
                     {preview && previewContent && (
                         <motion.div
