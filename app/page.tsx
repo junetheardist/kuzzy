@@ -1,6 +1,6 @@
 'use client';
 import React, {useEffect, useMemo, useState} from 'react';
-import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/orderList";
+import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/OrderList";
 import {CompactStoreList} from "@/components/stores/StoreList";
 import {RegionFilterView} from '@/components/Regions/RegionFilterView';
 import {regions} from '@/data/regions';
@@ -121,7 +121,7 @@ export default function Home() {
                         {activeTab === 'locations' && <RegionFilterView onShowPreview={handleShowPreview}/>}
                     </div>
                 </div>
-{/* ok */}
+                {/* ok */}
                 <AnimatePresence>
                     {preview && previewContent && (
                         <motion.div
@@ -148,7 +148,7 @@ export default function Home() {
 
             </div>
 
-            
+
             <Modal
                 isOpen={!!selectedOrder}
                 onClose={() => setSelectedOrder(null)}
@@ -158,8 +158,8 @@ export default function Home() {
                     throw new Error('Function not implemented.');
                 }}/>} {/* Changed from OrderDetailsPopup */}
             </Modal>
-            <GoogleMapView 
-                showStores={activeTab === 'stores'} 
+            <GoogleMapView
+                showStores={activeTab === 'stores'}
                 stores={vendors}
             />
 

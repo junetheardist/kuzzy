@@ -1,13 +1,14 @@
 import {NextResponse} from "next/server";
 import connectDB from "@/lib/mongodb";
 import Region from "@/models/Region";
+import State from "@/models/State";
 import Country from "@/models/Country";
 import mongoose from "mongoose";
 
 export async function GET(_request: Request, context: {
     params: Promise<{ id: string }>
 }) {
-
+    State;
     try {
         await connectDB();
         const {id} = await context.params;
