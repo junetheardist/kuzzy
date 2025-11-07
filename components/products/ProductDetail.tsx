@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '@/types/product';
-import { orders } from '@/data/orders';
-import { stores } from '@/data/stores';
+import { orders } from '@/data/Orders';
+import { stores } from '@/data/Stores';
 import { Tag, Package, DollarSign, ShoppingCart, BarChart, User, Calendar, Star, MessageSquare, Building } from 'lucide-react';
 
 interface ProductDetailProps {

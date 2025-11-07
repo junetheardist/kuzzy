@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui/Button';
 import {CertificationStep, GalleryStep, OwnerInfoStep, StoreInfoStep,} from './storeformsteps';
 import {useAppDispatch, useAppSelector} from '@/redux/hooks';
 import {createVendor, fetchVendors} from '@/redux/vendorSlice';

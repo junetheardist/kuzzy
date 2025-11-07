@@ -1,6 +1,6 @@
 'use client';
 import React, {useMemo, useState} from 'react';
-import {communities, lgas, regions, states, streets} from '@/data/regions';
+import {communities, lgas, regions, states, streets} from '@/data/Regions';
 import {RegionListItem} from '@/types/region'; // Assuming this path is correct
 import {RegionCard} from "@/components/Regions/RegionCard";
 import {ChevronRight, Package, ShoppingCart, Store, Users} from 'lucide-react';

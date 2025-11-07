@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
             shopSecondaryPhoneNumber,
             saleType,
             discount,
+            category,
             // Owner details
             ownerName,
             ownerAddress,
@@ -97,6 +98,7 @@ export async function POST(req: NextRequest) {
                 shopSecondaryPhoneNumber,
                 saleType,
                 discount,
+                category,
                 ownerName,
                 ownerAddress,
                 ownerEmail,

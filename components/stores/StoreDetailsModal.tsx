@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { X, Edit } from "lucide-react";
 import { Address, Gallery, Vendor } from "@/redux/vendorSlice";
-import { products } from "@/data/products";
+import { products } from "@/data/Products";
 
 interface StoreDetailsModalProps {
   store: Vendor | null;

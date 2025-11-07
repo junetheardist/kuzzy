@@ -65,6 +65,7 @@ const UserSchema = new Schema({
     shopSecondaryPhoneNumber: {type: String},
     saleType: {type: String},
     discount: {type: String},
+    category: {type: String}, // Store category (electronics, clothing, food, etc.)
 
     ownerName: {type: String},
     ownerAddress: AddressSchema,

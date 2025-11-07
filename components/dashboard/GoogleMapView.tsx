@@ -43,40 +43,36 @@ const Marker = ({text}: { text: string, lat: number, lng: number }) => (
 );
 
 // Store marker component with color based on category
-const StoreMarker = ({text, shopName, category, color}: { text: string, shopName?: string, category?: string, color?: string, lat: number, lng: number }) => {
+const StoreMarker = ({text, shopName, category, color, onClick, isSelected}: { text: string, shopName?: string, category?: string, color?: string, onClick?: (e: React.MouseEvent) => void, isSelected?: boolean, lat: number, lng: number }) => {
     const markerColor = color || getCategoryColor(category);
     
     return (
-        <div style={{position: 'relative', cursor: 'pointer'}} title={`${shopName} (${category || 'Uncategorized'})`}>
-            <div style={{
-                width: '32px',
-                height: '40px',
-                backgroundColor: markerColor,
-                borderRadius: '50% 50% 50% 0%',
-                border: '2px solid white',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                transform: 'rotate(-45deg)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: '-16px',
-                marginTop: '-20px',
-                transition: 'transform 0.2s ease-in-out'
-            }} 
-            onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'rotate(-45deg) scale(1.2)';
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'rotate(-45deg)';
-            }}>
-                <Store 
-                    size={16} 
-                    color="white" 
-                    style={{
-                        transform: 'rotate(45deg)',
-                    }}
-                />
-            </div>
+        <div 
+            style={{position: 'relative', cursor: 'pointer'}} 
+            title={`${shopName} (${category || 'Uncategorized'})`} 
+            onClick={onClick}
+        >
+            <img
+                src="/shop.svg"
+                alt={shopName}
+                style={{
+                    width: '40px',
+                    height: '48px',
+                    filter: isSelected ? `drop-shadow(0 0 12px rgba(0,0,0,0.6))` : `drop-shadow(0 2px 8px rgba(0,0,0,0.3))`,
+                    opacity: isSelected ? 1 : 0.7,
+                    transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                    transition: 'transform 0.2s ease-in-out, filter 0.3s ease-in-out, opacity 0.3s ease-in-out',
+                    cursor: 'pointer',
+                    marginLeft: '-20px',
+                    marginTop: '-24px'
+                }}
+                onMouseEnter={(e) => {
+                    if (!isSelected) (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.2)';
+                }}
+                onMouseLeave={(e) => {
+                    if (!isSelected) (e.currentTarget as HTMLImageElement).style.transform = 'scale(1)';
+                }}
+            />
         </div>
     );
 };
@@ -102,17 +98,58 @@ const CurrentLocationMarker = ({text}: { text: string, lat: number, lng: number 
 interface GoogleMapViewProps {
     showStores?: boolean;
     stores?: Vendor[];
+    onLocationClick?: (lat: number, lng: number) => void;
+    mapCenter?: { lat: number; lng: number };
+    zoom?: number;
 }
 
-export default function GoogleMapView({ showStores = false, stores = [] }: GoogleMapViewProps) {
+export default function GoogleMapView({ showStores = false, stores = [], onLocationClick, mapCenter: propMapCenter, zoom: propZoom }: GoogleMapViewProps) {
     const [currentLocation, setCurrentLocation] = useState<{lat: number, lng: number} | null>(null);
-    const [mapCenter, setMapCenter] = useState({
-        lat: 6.5244,
-        lng: 3.3792
-    });
-    const [zoom, setZoom] = useState(15);
+    const [mapCenter, setMapCenter] = useState(
+        propMapCenter || {
+            lat: 6.5244,
+            lng: 3.3792
+        }
+    );
+    const [zoom, setZoom] = useState(propZoom || 15);
     const [loading, setLoading] = useState(true);
+    const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
     const mapRef = useRef<any>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    // Update map center and zoom when props change
+    useEffect(() => {
+        if (propMapCenter) {
+            setMapCenter(propMapCenter);
+        }
+    }, [propMapCenter]);
+
+    useEffect(() => {
+        if (propZoom) {
+            setZoom(propZoom);
+        }
+    }, [propZoom]);
+
+    // Handle click outside the card to close it
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
+                // Check if the click was on a marker (inside the map)
+                const mapElement = document.querySelector('[role="region"]');
+                if (mapElement && mapElement.contains(event.target as Node)) {
+                    // Clicked on map/marker, close card
+                    setSelectedVendor(null);
+                }
+            }
+        };
+
+        if (selectedVendor) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
+        }
+    }, [selectedVendor]);
 
     // Debug: Log stores data whenever it changes
     useEffect(() => {
@@ -293,7 +330,7 @@ export default function GoogleMapView({ showStores = false, stores = [] }: Googl
 
             {/* Category Legend */}
             {showStores && (
-                <div className="absolute top-24 left-6 bg-white rounded-lg shadow-lg z-20 p-3 max-w-xs">
+                <div className="absolute top-8 right-16 bg-white rounded-lg shadow-lg z-20 p-3 max-w-xs">
                     <p className="text-sm font-semibold text-gray-800 mb-2">Shop Categories</p>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                         {Object.entries(CATEGORY_COLORS).map(([category, color]) => (
@@ -351,6 +388,8 @@ export default function GoogleMapView({ showStores = false, stores = [] }: Googl
                     const shopAddress = typeof store.shopAddress === 'object' ? store.shopAddress : null;
                     if (shopAddress && shopAddress.latitude && shopAddress.longitude) {
                         const markerColor = getCategoryColor(store.category);
+                        const isSelected = selectedVendor?._id === store._id;
+                        
                         return (
                             <StoreMarker
                                 key={store._id}
@@ -360,6 +399,10 @@ export default function GoogleMapView({ showStores = false, stores = [] }: Googl
                                 shopName={store.shopName}
                                 category={store.category}
                                 color={markerColor}
+                                isSelected={isSelected}
+                                onClick={(e) => {
+                                    setSelectedVendor(store);
+                                }}
                             />
                         );
                     }
@@ -376,6 +419,137 @@ export default function GoogleMapView({ showStores = false, stores = [] }: Googl
                     />
                 ))}
             </GoogleMapReact>
+
+            {/* Vendor Info Card */}
+            {selectedVendor && (
+                <div 
+                    ref={cardRef}
+                    className="absolute bg-white rounded-lg shadow-xl z-30 w-80 p-4 max-h-96 overflow-y-auto"
+                    style={{
+                        left: '50%',
+                        top: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        animation: 'slideIn 0.3s ease-out'
+                    }}
+                >
+                    <style>{`
+                        @keyframes slideIn {
+                            from {
+                                opacity: 0;
+                                transform: translate(-50%, -60%);
+                            }
+                            to {
+                                opacity: 1;
+                                transform: translate(-50%, -50%);
+                            }
+                        }
+                    `}</style>
+                    <div className="flex justify-between items-start mb-3">
+                        <h3 className="text-lg font-bold text-gray-800">{selectedVendor.shopName}</h3>
+                        <button
+                            onClick={() => {
+                                setSelectedVendor(null);
+                            }}
+                            className="text-gray-400 hover:text-gray-600 text-xl"
+                        >
+                            ✕
+                        </button>
+                    </div>
+
+                    {/* Category Badge */}
+                    <div className="mb-3">
+                        <span className="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold rounded-full capitalize">
+                            {selectedVendor.category || 'Uncategorized'}
+                        </span>
+                    </div>
+
+                    {/* Shop Details */}
+                    <div className="space-y-2 text-sm">
+                        {/* Email */}
+                        {selectedVendor.shopEmail && (
+                            <div className="flex items-start gap-2">
+                                <span className="text-gray-500 font-medium min-w-fit">Email:</span>
+                                <a href={`mailto:${selectedVendor.shopEmail}`} className="text-indigo-600 hover:underline break-all">
+                                    {selectedVendor.shopEmail}
+                                </a>
+                            </div>
+                        )}
+
+                        {/* Primary Phone */}
+                        {selectedVendor.shopPrimaryPhoneNumber && (
+                            <div className="flex items-start gap-2">
+                                <span className="text-gray-500 font-medium min-w-fit">Phone:</span>
+                                <a href={`tel:${selectedVendor.shopPrimaryPhoneNumber}`} className="text-indigo-600 hover:underline">
+                                    {selectedVendor.shopPrimaryPhoneNumber}
+                                </a>
+                            </div>
+                        )}
+
+                        {/* Secondary Phone */}
+                        {selectedVendor.shopSecondaryPhoneNumber && (
+                            <div className="flex items-start gap-2">
+                                <span className="text-gray-500 font-medium min-w-fit">Alt Phone:</span>
+                                <a href={`tel:${selectedVendor.shopSecondaryPhoneNumber}`} className="text-indigo-600 hover:underline">
+                                    {selectedVendor.shopSecondaryPhoneNumber}
+                                </a>
+                            </div>
+                        )}
+
+                        {/* Owner Name */}
+                        {selectedVendor.ownerName && (
+                            <div className="flex items-start gap-2">
+                                <span className="text-gray-500 font-medium min-w-fit">Owner:</span>
+                                <span className="text-gray-700">{selectedVendor.ownerName}</span>
+                            </div>
+                        )}
+
+                        {/* Sales Type */}
+                        {selectedVendor.saleType && (
+                            <div className="flex items-start gap-2">
+                                <span className="text-gray-500 font-medium min-w-fit">Sales:</span>
+                                <span className="text-gray-700 capitalize">{selectedVendor.saleType}</span>
+                            </div>
+                        )}
+
+                        {/* Address */}
+                        {typeof selectedVendor.shopAddress === 'object' && selectedVendor.shopAddress && (
+                            <div className="flex items-start gap-2">
+                                <span className="text-gray-500 font-medium min-w-fit">Address:</span>
+                                <span className="text-gray-700 text-xs">
+                                    {[
+                                        (selectedVendor.shopAddress as any).street,
+                                        (selectedVendor.shopAddress as any).city,
+                                        (selectedVendor.shopAddress as any).state
+                                    ].filter(Boolean).join(', ')}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-t border-gray-200 my-3"></div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                        {selectedVendor.shopEmail && (
+                            <a
+                                href={`mailto:${selectedVendor.shopEmail}`}
+                                className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 text-xs font-semibold rounded hover:bg-blue-100 transition text-center"
+                            >
+                                Email
+                            </a>
+                        )}
+                        {selectedVendor.shopPrimaryPhoneNumber && (
+                            <a
+                                href={`tel:${selectedVendor.shopPrimaryPhoneNumber}`}
+                                className="flex-1 px-3 py-2 bg-green-50 text-green-600 text-xs font-semibold rounded hover:bg-green-100 transition text-center"
+                            >
+                                Call
+                            </a>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

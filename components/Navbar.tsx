@@ -10,9 +10,8 @@ export const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center gap-2">
-              <Truck className="h-8 w-8 text-indigo-600" />
-              <span className="text-xl font-bold text-gray-800">Kuzzy</span>
+            <Link href="/" className="flex items-center">
+              <img src="/logo-main.svg" alt="Kuzzy Logo" className="h-8 w-auto" />
             </Link>
           </div>
 

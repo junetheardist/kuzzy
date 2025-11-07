@@ -3,16 +3,16 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/OrderList";
 import {CompactStoreList} from "@/components/stores/StoreList";
 import {RegionFilterView} from '@/components/Regions/RegionFilterView';
-import {regions} from '@/data/regions';
-import {orders} from '@/data/orders';
+import {regions} from '@/data/Regions';
+import {orders} from '@/data/Orders';
 import {OrderDetail} from '@/components/orders/OrderDetail';
 import {Order} from '@/types/order';
 import {Modal} from '@/components/ui/Modal';
 import {AnimatePresence, motion} from 'framer-motion';
 import {Plus, X} from 'lucide-react';
 import {TableStoreList} from '@/components/stores/StoreListView';
-import {products} from '@/data/products';
-import {customers} from '@/data/customers'; // Import the new customer data
+import {products} from '@/data/Products';
+import {customers} from '@/data/Customers'; // Import the new customer data
 import {TableProductList} from '@/components/products/TableProductList';
 import {TableCustomerList} from '@/components/customers/TableCustomerList';
 import GoogleMapView from "@/components/dashboard/GoogleMapView";
@@ -27,6 +27,8 @@ export default function Home() {
     const [isAddStoreModalOpen, setIsAddStoreModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('orders');
     const [preview, setPreview] = useState<{ type: string; data: any } | null>(null);
+    const [mapCenter, setMapCenter] = useState({ lat: 20.5937, lng: 78.9629 });
+    const [zoom, setZoom] = useState(15);
 
     const dispatch = useAppDispatch();
     const {vendors, loading, error} = useAppSelector((s) => s.vendor);
@@ -37,6 +39,11 @@ export default function Home() {
 
     const handleShowPreview = (type: string, data: any) => {
         setPreview({type, data});
+    };
+
+    const handleLocationClick = (lat: number, lng: number) => {
+        setMapCenter({ lat, lng });
+        setZoom(18);
     };
 
     const previewContent = useMemo(() => {
@@ -111,7 +118,7 @@ export default function Home() {
                             </div>}
                         {activeTab === 'stores' && (
                             <div className="py-4 relative h-full">
-                                <CompactStoreList stores={vendors}/>
+                                <CompactStoreList stores={vendors} onLocationClick={handleLocationClick}/>
                                 <button
                                     onClick={() => setIsAddStoreModalOpen(true)}
                                     className="absolute bottom-4 right-4 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-colors flex items-center justify-center">
@@ -161,6 +168,9 @@ export default function Home() {
             <GoogleMapView
                 showStores={activeTab === 'stores'}
                 stores={vendors}
+                onLocationClick={handleLocationClick}
+                mapCenter={mapCenter}
+                zoom={zoom}
             />
 
             <Modal

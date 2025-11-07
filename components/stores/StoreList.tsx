@@ -7,10 +7,11 @@ import { EditStoreModal } from "./EditStoreModal";
 
 interface StoreListProps {
     stores: Vendor[];
+    onLocationClick?: (lat: number, lng: number) => void;
 }
 
 /* 🟢 Default Grid View (uses detailed StoreCard) */
-export const StoreList = ({stores}: StoreListProps) => {
+export const StoreList = ({stores, onLocationClick}: StoreListProps) => {
     const [selectedStore, setSelectedStore] = useState<Vendor | null>(null);
     const [editingStore, setEditingStore] = useState<Vendor | null>(null);
     
@@ -19,7 +20,7 @@ export const StoreList = ({stores}: StoreListProps) => {
             <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-4">
                 {stores.map((store) => (
                     <div key={store._id} onClick={() => setSelectedStore(store)}>
-                        <StoreCard store={store}/>
+                        <StoreCard store={store} onLocationClick={onLocationClick}/>
                     </div>
                 ))}
             </div>
@@ -42,7 +43,7 @@ export const StoreList = ({stores}: StoreListProps) => {
 };
 
 /* 🟣 Compact List View (uses CompactStoreCard) */
-export const CompactStoreList = ({stores}: StoreListProps) => {
+export const CompactStoreList = ({stores, onLocationClick}: StoreListProps) => {
     const [selectedStore, setSelectedStore] = useState<Vendor | null>(null);
     const [editingStore, setEditingStore] = useState<Vendor | null>(null);
     
@@ -51,7 +52,7 @@ export const CompactStoreList = ({stores}: StoreListProps) => {
             <div className="space-y-1">
                 {stores.map((store) => (
                     <div key={store._id} onClick={() => setSelectedStore(store)}>
-                        <CompactStoreCard store={store}/>
+                        <CompactStoreCard store={store} onLocationClick={onLocationClick}/>
                     </div>
                 ))}
             </div>
