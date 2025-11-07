@@ -3,16 +3,16 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/OrderList";
 import {CompactStoreList} from "@/components/stores/StoreList";
 import {RegionFilterView} from '@/components/Regions/RegionFilterView';
-import {regions} from '@/data/Regions';
-import {orders} from '@/data/Orders';
+import {regions} from '@/data/regions';
+import {orders} from '@/data/orders';
 import {OrderDetail} from '@/components/orders/OrderDetail';
 import {Order} from '@/types/order';
 import {Modal} from '@/components/ui/Modal';
 import {AnimatePresence, motion} from 'framer-motion';
 import {Plus, X} from 'lucide-react';
 import {TableStoreList} from '@/components/stores/StoreListView';
-import {products} from '@/data/Products';
-import {customers} from '@/data/Customers'; // Import the new customer data
+import {products} from '@/data/products';
+import {customers} from '@/data/customers'; // Import the new customer data
 import {TableProductList} from '@/components/products/TableProductList';
 import {TableCustomerList} from '@/components/customers/TableCustomerList';
 import GoogleMapView from "@/components/dashboard/GoogleMapView";
@@ -27,7 +27,7 @@ export default function Home() {
     const [isAddStoreModalOpen, setIsAddStoreModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('orders');
     const [preview, setPreview] = useState<{ type: string; data: any } | null>(null);
-    const [mapCenter, setMapCenter] = useState({ lat: 20.5937, lng: 78.9629 });
+    const [mapCenter, setMapCenter] = useState({lat: 20.5937, lng: 78.9629});
     const [zoom, setZoom] = useState(15);
 
     const dispatch = useAppDispatch();
@@ -42,7 +42,7 @@ export default function Home() {
     };
 
     const handleLocationClick = (lat: number, lng: number) => {
-        setMapCenter({ lat, lng });
+        setMapCenter({lat, lng});
         setZoom(18);
     };
 

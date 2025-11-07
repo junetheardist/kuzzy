@@ -24,8 +24,6 @@ const LocationManager = () => {
     const {countries, regions, states, cities, streets, selected, loading} = location;
 
 
-    console.log(selected);
-
     const [name, setName] = useState("");
     const [editing, setEditing] = useState<{ id: string; level: string } | null>(null);
 
@@ -106,9 +104,6 @@ const LocationManager = () => {
         </div>
     );
 
-    console.log("countries", countries)
-    console.log("regions", regions)
-
     return (
         <div className="max-w-2xl mx-auto p-4">
             <h2 className="text-xl font-bold mb-4">Location Manager</h2>
@@ -154,8 +149,8 @@ const LocationManager = () => {
             {renderLevel("countries", countries)}
             {selected.countries && renderLevel("regions", regions, selected.countries)}
             {selected.regions && renderLevel("states", states, selected.regions, selected.countries)}
-            {selected.states && renderLevel("cities", cities, selected.state, selected.regions, selected.countries)}
-            {selected.cities && renderLevel("streets", streets, selected.cities, selected.state, selected.regions, selected.countries)}
+            {selected.states && renderLevel("cities", cities, selected.states, selected.regions, selected.countries)}
+            {selected.cities && renderLevel("streets", streets, selected.cities, selected.states, selected.regions, selected.countries)}
         </div>
     );
 };

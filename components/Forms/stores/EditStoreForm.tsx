@@ -1,12 +1,12 @@
-import React, { useMemo, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/Button';
-import { CertificationStep, GalleryStep, OwnerInfoStep, StoreInfoStep } from './storeformsteps';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Vendor, updateVendor, fetchVendors } from '@/redux/vendorSlice';
+import React, {useMemo, useState} from 'react';
+import {FormProvider, useForm} from 'react-hook-form';
+import {Button} from '@/components/ui/button';
+import {CertificationStep, GalleryStep, OwnerInfoStep, StoreInfoStep} from './storeformsteps';
+import {useAppDispatch, useAppSelector} from '@/redux/hooks';
+import {fetchVendors, updateVendor, Vendor} from '@/redux/vendorSlice';
 
 // Alert component for error/success messages
-const Alert = ({ message, type }: { message: string; type: 'error' | 'success' }) => (
+const Alert = ({message, type}: { message: string; type: 'error' | 'success' }) => (
     <div
         className={`p-4 rounded-md text-sm font-medium ${
             type === 'error'
@@ -24,15 +24,15 @@ interface EditStoreFormProps {
 }
 
 const steps = [
-    { id: 1, name: 'Store Info' },
-    { id: 2, name: 'Owner Info' },
-    { id: 3, name: 'Certification' },
-    { id: 4, name: 'Gallery' },
+    {id: 1, name: 'Store Info'},
+    {id: 2, name: 'Owner Info'},
+    {id: 3, name: 'Certification'},
+    {id: 4, name: 'Gallery'},
 ];
 
 const totalFields = 15; // Approximate total fields for progress calculation
 
-export const EditStoreForm: React.FC<EditStoreFormProps> = ({ store, onClose }) => {
+export const EditStoreForm: React.FC<EditStoreFormProps> = ({store, onClose}) => {
     const [currentStep, setCurrentStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -72,9 +72,9 @@ export const EditStoreForm: React.FC<EditStoreFormProps> = ({ store, onClose }) 
         },
     });
 
-    const { handleSubmit, watch, reset, formState: { errors: formErrors } } = methods;
+    const {handleSubmit, watch, reset, formState: {errors: formErrors}} = methods;
     const dispatch = useAppDispatch();
-    const { userId } = useAppSelector(state => state.auth);
+    const {userId} = useAppSelector(state => state.auth);
 
     const onSubmit = async (data: any) => {
         // Clear previous messages
@@ -184,8 +184,8 @@ export const EditStoreForm: React.FC<EditStoreFormProps> = ({ store, onClose }) 
         <FormProvider {...methods}>
             <div className="space-y-6">
                 {/* Error/Success Messages */}
-                {error && <Alert message={error} type="error" />}
-                {success && <Alert message="Store updated successfully!" type="success" />}
+                {error && <Alert message={error} type="error"/>}
+                {success && <Alert message="Store updated successfully!" type="success"/>}
 
                 {/* Progress Indicator */}
                 <div>
@@ -195,7 +195,7 @@ export const EditStoreForm: React.FC<EditStoreFormProps> = ({ store, onClose }) 
                     <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
                             className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${progress}%` }}
+                            style={{width: `${progress}%`}}
                         ></div>
                     </div>
                 </div>
@@ -223,10 +223,10 @@ export const EditStoreForm: React.FC<EditStoreFormProps> = ({ store, onClose }) 
 
                 {/* Form Content */}
                 <div className="min-h-[300px]">
-                    {currentStep === 1 && <StoreInfoStep />}
-                    {currentStep === 2 && <OwnerInfoStep />}
-                    {currentStep === 3 && <CertificationStep />}
-                    {currentStep === 4 && <GalleryStep />}
+                    {currentStep === 1 && <StoreInfoStep/>}
+                    {currentStep === 2 && <OwnerInfoStep/>}
+                    {currentStep === 3 && <CertificationStep/>}
+                    {currentStep === 4 && <GalleryStep/>}
                 </div>
 
                 {/* Action Buttons */}

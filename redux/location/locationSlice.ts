@@ -163,15 +163,21 @@ const locationSlice = createSlice({
 
             // --- CREATE ---
             .addCase(createLocation.fulfilled, (state, action) => {
-                const {level, data} = action.payload;
-                (state as any)[`${level}s`].push(data);
+                const {level} = action.payload;
+                const data = action.payload.data.data;
+                console.log("Hi", action.payload);
+                console.log("Data", action.payload.data.data);
+                (state as any)[`${level}`].push(data);
                 state.loading = false;
             })
 
             // --- UPDATE ---
             .addCase(updateLocation.fulfilled, (state, action) => {
-                const {level, data} = action.payload;
-                const list = (state as any)[`${level}s`];
+                const {level} = action.payload;
+                const data = action.payload.data.data;
+                console.log("Hello", action.payload);
+                console.log("Data", data);
+                const list = (state as any)[`${level}`];
                 const index = list.findIndex((item: any) => item._id === data._id);
                 if (index !== -1) list[index] = data;
                 state.loading = false;
@@ -180,8 +186,8 @@ const locationSlice = createSlice({
             // --- DELETE ---
             .addCase(deleteLocation.fulfilled, (state, action) => {
                 const {level, id} = action.payload;
-                const list = (state as any)[`${level}s`];
-                (state as any)[`${level}s`] = list.filter((item: any) => item._id !== id);
+                const list = (state as any)[`${level}`];
+                (state as any)[`${level}`] = list.filter((item: any) => item._id !== id);
                 state.loading = false;
             });
     },

@@ -8,7 +8,6 @@ interface GlobalAuthProviderProps {
     children: React.ReactNode;
 }
 
-// Public routes (no auth required)
 const PUBLIC_ROUTES = [
     '/login',
     '/register',
@@ -24,31 +23,31 @@ export const GlobalAuthProvider: React.FC<GlobalAuthProviderProps> = ({children}
     const [userId, setUserId] = useState<string | null>(null);
     const [isChecking, setIsChecking] = useState(true);
 
-    // Load cookies and check if user is authenticated
     useEffect(() => {
-        const token = Cookies.get('kuzzy-token');
-        const id = Cookies.get('kuzzy-id');
+        const checkAuth = () => {
+            const token = Cookies.get('kuzzy-token');
+            const id = Cookies.get('kuzzy-id');
 
-        // Set the user ID if cookies exist
-        if (token && id) {
-            setUserId(id);
-        } else {
-            setUserId(null);
-        }
+            if (token && id) {
+                setUserId(id);
+            } else {
+                setUserId(null);
+            }
+
+            setIsChecking(false);
+        };
+
+        checkAuth();
     }, []);
 
-    // Handle redirects when auth or route changes
     useEffect(() => {
-        if (userId === null && !isChecking) {
-            const isPublic = PUBLIC_ROUTES.some((route) => pathname?.startsWith(route));
-            if (!isPublic) router.push('/login');
-        }
-    }, [userId, pathname, router, isChecking]);
+        if (isChecking) return;
 
-    // Finish the checking state once cookies are read
-    useEffect(() => {
-        setIsChecking(false);
-    }, [userId]);
+        const isPublic = PUBLIC_ROUTES.some((route) => pathname?.startsWith(route));
+        if (!userId && !isPublic) {
+            router.replace('/login');
+        }
+    }, [userId, pathname, isChecking, router]);
 
     if (isChecking) {
         return (
