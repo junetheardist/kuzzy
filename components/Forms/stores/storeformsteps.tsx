@@ -70,28 +70,52 @@ export const StoreInfoStep = () => {
                 <Input label="Secondary Phone" {...register('storeSecondaryPhone')} />
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Sales Type *</label>
-                <select
-                    {...register('saleType', {required: 'Sales type is required'})}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                    <option value="">Select sales type...</option>
-                    <option value="retail">Retail</option>
-                    <option value="wholesale">Wholesale</option>
-                    <option value="both">Both</option>
-                </select>
-                {(errors.saleType as any)?.message && (
-                    <p className="text-red-500 text-xs mt-1">{(errors.saleType as any).message}</p>
-                )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Sales Type *</label>
+                    <select
+                        {...register('saleType', {required: 'Sales type is required'})}
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                        <option value="">Select sales type...</option>
+                        <option value="retail">Retail</option>
+                        <option value="wholesale">Wholesale</option>
+                        <option value="both">Both</option>
+                    </select>
+                    {(errors.saleType as any)?.message && (
+                        <p className="text-red-500 text-xs mt-1">{(errors.saleType as any).message}</p>
+                    )}
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Store Category *</label>
+                    <select
+                        {...register('category', {required: 'Category is required'})}
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                        <option value="">Select category...</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="food">Food</option>
+                        <option value="groceries">Groceries</option>
+                        <option value="pharmacy">Pharmacy</option>
+                        <option value="home">Home</option>
+                        <option value="beauty">Beauty</option>
+                        <option value="books">Books</option>
+                        <option value="sports">Sports</option>
+                        <option value="furniture">Furniture</option>
+                    </select>
+                    {(errors.category as any)?.message && (
+                        <p className="text-red-500 text-xs mt-1">{(errors.category as any).message}</p>
+                    )}
+                </div>
             </div>
 
             <h3 className="text-md font-semibold text-gray-800 pt-2 border-t mt-6">Shop Address</h3>
 
             {/* Address Autocomplete with Generate Button */}
             <AddressAutocomplete
-                label="Search Address"
-                placeholder="Type to search for address..."
+                placeholder="Search address"
                 value={shopAddressQuery}
                 onChange={setShopAddressQuery}
                 onSelectSuggestion={handleShopAddressSuggestion}

@@ -1,9 +1,8 @@
 import React, { useRef, useEffect } from 'react';
-import { Input } from '@/components/ui/Input';
 import { useAddressAutocomplete } from '@/hooks/useAddressAutocomplete';
 
 export interface AddressAutocompleteProps {
-  label: string;
+  label?: string;
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;
@@ -115,7 +114,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           disabled={disabled}
           required={required}
           autoComplete="off"
-          className="block w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="block w-full px-3 py-2 pr-10  border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
         {/* Generate Location Button */}
         <button

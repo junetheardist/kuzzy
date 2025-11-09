@@ -27,6 +27,8 @@ export default function Home() {
     const [isAddStoreModalOpen, setIsAddStoreModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('orders');
     const [preview, setPreview] = useState<{ type: string; data: any } | null>(null);
+    const [mapCenter, setMapCenter] = useState({lat: 20.5937, lng: 78.9629});
+    const [zoom, setZoom] = useState(15);
 
     const dispatch = useAppDispatch();
     const {vendors, loading, error} = useAppSelector((s) => s.vendor);
@@ -37,6 +39,11 @@ export default function Home() {
 
     const handleShowPreview = (type: string, data: any) => {
         setPreview({type, data});
+    };
+
+    const handleLocationClick = (lat: number, lng: number) => {
+        setMapCenter({lat, lng});
+        setZoom(18);
     };
 
     const previewContent = useMemo(() => {
@@ -51,21 +58,27 @@ export default function Home() {
 
         switch (type) {
             case 'stores':
-                const filteredStores = vendors.filter(store => statesToFilter.includes(store.address.state));
-                return {title: `Stores in ${regionName}`, content: <TableStoreList stores={vendors}/>};
+                const filteredStores = vendors.filter(store => {
+                    const shopAddr = typeof store.shopAddress === 'object' ? store.shopAddress : null;
+                    return statesToFilter.includes(shopAddr?.state || '');
+                });
+                return {title: `Stores in ${regionName}`, content: <TableStoreList stores={filteredStores}/>};
             case 'products':
                 // Products are not tied to a region in the current data model, so we show all.
                 return {title: `Products in ${regionName}`, content: <TableProductList products={products}/>};
             case 'customers':
-                const filteredCustomers = customers.filter(customer => statesToFilter.includes(customer.address.state));
+                const filteredCustomers = customers.filter(customer => statesToFilter.includes(customer.address?.state || ''));
                 return {
                     title: `Customers in ${regionName}`,
                     content: <TableCustomerList customers={filteredCustomers}/>
                 };
             case 'orders':
                 const storeIdsInRegion = vendors
-                    .filter(store => statesToFilter.includes(store.address.state))
-                    .map(store => store.id);
+                    .filter(store => {
+                        const shopAddr = typeof store.shopAddress === 'object' ? store.shopAddress : null;
+                        return statesToFilter.includes(shopAddr?.state || '');
+                    })
+                    .map(store => store._id || store.id);
                 const filteredOrders = orders.filter(order => storeIdsInRegion.includes(order.storeId));
                 return {title: `Orders in ${regionName}`, content: <PreviewTableOrderList orders={filteredOrders}/>};
             default:
@@ -105,7 +118,7 @@ export default function Home() {
                             </div>}
                         {activeTab === 'stores' && (
                             <div className="py-4 relative h-full">
-                                <CompactStoreList stores={vendors}/>
+                                <CompactStoreList stores={vendors} onLocationClick={handleLocationClick}/>
                                 <button
                                     onClick={() => setIsAddStoreModalOpen(true)}
                                     className="absolute bottom-4 right-4 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-colors flex items-center justify-center">
@@ -115,7 +128,7 @@ export default function Home() {
                         {activeTab === 'locations' && <RegionFilterView onShowPreview={handleShowPreview}/>}
                     </div>
                 </div>
-
+                {/* ok */}
                 <AnimatePresence>
                     {preview && previewContent && (
                         <motion.div
@@ -152,7 +165,13 @@ export default function Home() {
                     throw new Error('Function not implemented.');
                 }}/>} {/* Changed from OrderDetailsPopup */}
             </Modal>
-            <GoogleMapView/>
+            <GoogleMapView
+                showStores={activeTab === 'stores'}
+                stores={vendors}
+                onLocationClick={handleLocationClick}
+                mapCenter={mapCenter}
+                zoom={zoom}
+            />
 
             <Modal
                 isOpen={isAddStoreModalOpen}

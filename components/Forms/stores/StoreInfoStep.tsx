@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useFormContext} from 'react-hook-form';
-import {Input} from '@/components/ui/input';
+import {Input} from '@/components/ui/Input';
 import {Select} from '@/components/ui/Select';
 import {useGeolocation} from '@/hooks/useGeolocation';
 
@@ -77,11 +77,28 @@ export const StoreInfoStep = () => {
                 )}
             </div>
 
-            <Select label="Sales Type" {...register('salesType')}>
-                <option value="retail">Retail</option>
-                <option value="wholesale">Wholesale</option>
-                <option value="both">Both</option>
-            </Select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Select label="Sales Type" {...register('salesType')}>
+                    <option value="">Select Sales Type</option>
+                    <option value="retail">Retail</option>
+                    <option value="wholesale">Wholesale</option>
+                    <option value="both">Both</option>
+                </Select>
+                <Select label="Store Category *" {...register('category', {required: 'Category is required'})}>
+                    <option value="">Select Category</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="food">Food</option>
+                    <option value="groceries">Groceries</option>
+                    <option value="pharmacy">Pharmacy</option>
+                    <option value="home">Home</option>
+                    <option value="beauty">Beauty</option>
+                    <option value="books">Books</option>
+                    <option value="sports">Sports</option>
+                    <option value="furniture">Furniture</option>
+                </Select>
+            </div>
+            {errors.category && <p className="text-red-500 text-xs">{(errors.category as any).message}</p>}
             <Input label="Discount Amount" type="number" {...register('discount', {valueAsNumber: true})} />
         </div>
     );
