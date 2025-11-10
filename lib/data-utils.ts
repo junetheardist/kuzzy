@@ -1,8 +1,8 @@
 import { stores } from '@/data/stores';
-import { customers } from '@/data/customers';
+import { customers } from '@/data/Customers';
 import { orders } from '@/data/orders';
-import { products } from '@/data/products';
-import { deliveryAgents } from '@/data/deliveryAgents';
+import { products } from '@/data/Products';
+import { deliveryAgents } from '@/data/DeliveryAgents';
 
 /**
  * Gets the total number of stores within a given set of locations (states, LGAs, etc.).

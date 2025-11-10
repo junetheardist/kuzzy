@@ -38,7 +38,7 @@ const CurrentLocationMarker = ({text}: { text: string, lat: number, lng: number 
 );
 
 export default function GoogleMapView() {
-    const [currentLocation, setCurrentLocation] = useState(null);
+    const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [mapCenter, setMapCenter] = useState({
         lat: 6.5244,
         lng: 3.3792

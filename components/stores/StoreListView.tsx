@@ -44,5 +44,5 @@ const storeColumns: ColumnDefinition<Store>[] = [
 ];
 
 export const TableStoreList = ({stores}: TableStoreListProps) => {
-    return <ListView items={stores} columns={storeColumns} emptyStateMessage="No stores found."/>;
+    return <ListView items={stores as Store[]} columns={storeColumns} emptyStateMessage="No stores found."/>;
 };

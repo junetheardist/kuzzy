@@ -1,6 +1,7 @@
 import Header from "@/components/dashboard/Header";
 import Content from "@/components/dashboard/Content";
 import GoogleMapView from "@/components/dashboard/GoogleMapView";
+import Provider from "@/redux/provider";
 
 export default function Home() {
     return (
@@ -8,7 +9,7 @@ export default function Home() {
             className="relative flex min-h-screen flex-col ">
             <Header/>
             <GoogleMapView/>
-            <Content/>
+            <Provider> <Content/> </Provider>
         </div>
     );
 }
