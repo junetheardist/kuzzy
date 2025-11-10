@@ -72,10 +72,23 @@ export default function MultiStepNav() {
             cacDocFile: cacDocFile ? cacDocFile.name : undefined,
             gallery: gallery.map((f) => f.name),
             userId: userId!,
+            address: form.shopAddress,
+            id: userId!,
+            logo: '',
+            status: 'pending',
+            category: '',
+            dateJoined: new Date().toISOString(),
+            registrationDocuments: {
+                businessRegistrationUrl: '',
+                idType: '',
+                idNumber: '',
+                idDocumentUrl: '',
+                proofOfAddressUrl: ''
+            }
         };
 
         try {
-            await dispatch(createVendor(payload)).unwrap();
+            await dispatch(createVendor(payload as any)).unwrap();
             alert("Vendor created successfully!");
         } catch (err: any) {
             console.error("Vendor creation failed:", err);

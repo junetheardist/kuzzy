@@ -2,18 +2,18 @@ import {NextRequest, NextResponse} from "next/server";
 import dbConnect from "@/lib/mongodb";
 import {User} from "@/models/User";
 
-// GET /api/vendor/[id]
+// GET /api/vendor/[_id]
 export async function GET(
     req: NextRequest,
     context: {
-        params: Promise<{ id: string }>
+        params: Promise<{ _id: string }>
     }
 ) {
     try {
-        const {id} = await context.params;
+        const {_id} = await context.params;
         await dbConnect();
 
-        const vendor = await User.findById(id).select(
+        const vendor = await User.findById(_id).select(
             "-password -otp -otpExpiry -resetToken -resetTokenExpiry"
         );
 
@@ -35,15 +35,18 @@ export async function GET(
     }
 }
 
-// DELETE /api/vendor/[id]
+// DELETE /api/vendor/[_id]
 export async function DELETE(
     req: NextRequest,
-    {params}: { params: { id: string } }
+    context: {
+        params: Promise<{ _id: string }>
+    }
 ) {
     try {
+        const {_id} = await context.params;
         await dbConnect();
 
-        const user = await User.findById(params.id);
+        const user = await User.findById(_id);
         if (!user) {
             return NextResponse.json({error: "Vendor not found"}, {status: 404});
         }

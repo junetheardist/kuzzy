@@ -41,7 +41,7 @@ export const DropdownTrigger = ({ children }: { children: React.ReactElement }) 
       context.setIsOpen(!context.isOpen);
       (children.props as any).onClick?.(e);
     },
-  });
+  } as any);
 };
 
 export const DropdownContent = ({ children }: { children: ReactNode }) => {
