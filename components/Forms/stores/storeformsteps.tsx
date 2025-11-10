@@ -1,94 +1,265 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
-import { FileUpload } from '@/components/Forms/FileUpload';
+import React, {useState} from 'react';
+import {useFormContext} from 'react-hook-form';
+import {Input} from '@/components/ui/input';
+import {AddressAutocomplete} from '@/components/Forms/AddressAutocomplete';
+import {FileUpload} from '@/components/Forms/FileUpload';
+import {useGeolocation} from '@/hooks/useGeolocation';
 
 // --- StoreInfoStep ---
 export const StoreInfoStep = () => {
-  const { register, formState: { errors } } = useFormContext();
+    const {register, formState: {errors}, setValue, watch} = useFormContext();
+    const {loading: geoLoading, error: geoError, getLocation} = useGeolocation();
+    const [shopGeoMessage, setShopGeoMessage] = useState<string | null>(null);
+    const [shopAddressQuery, setShopAddressQuery] = useState('');
 
-  return (
-    <div className="space-y-4">
-      <Input
-        label="Store Name"
-        {...register('storeName', { required: 'Store name is required' })}
-      />
-      {errors.storeName && <p className="text-red-500 text-xs">{(errors.storeName as any).message}</p>}
+    const handleGetShopLocation = async () => {
+        setShopGeoMessage(null);
+        const addressData = await getLocation();
 
-      <Input label="Store Email Address" type="email" {...register('storeEmail')} />
+        if (addressData) {
+            // Populate all shop address fields
+            setValue('shopAddress.street', addressData.street);
+            setValue('shopAddress.city', addressData.city);
+            setValue('shopAddress.state', addressData.state);
+            setValue('shopAddress.country', addressData.country);
+            setValue('shopAddress.postalCode', addressData.postalCode);
+            setValue('shopAddress.latitude', addressData.latitude);
+            setValue('shopAddress.longitude', addressData.longitude);
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input label="Primary Phone" {...register('storePrimaryPhone')} />
-        <Input label="Secondary Phone" {...register('storeSecondaryPhone')} />
-      </div>
+            setShopGeoMessage(`✅ Location set: ${addressData.street}, ${addressData.city}`);
 
-      <h3 className="text-md font-semibold text-gray-800 pt-2 border-t mt-6">Address</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input label="Street" {...register('address.street', { required: true })} />
-        <Input label="City" {...register('address.city', { required: true })} />
-        <Input label="State" {...register('address.state', { required: true })} />
-      </div>
+            // Clear message after 3 seconds
+            setTimeout(() => setShopGeoMessage(null), 3000);
+        } else if (geoError) {
+            setShopGeoMessage(`❌ ${geoError}`);
+        }
+    };
 
-      <Select label="Sales Type" {...register('salesType')}>
-        <option value="retail">Retail</option>
-        <option value="wholesale">Wholesale</option>
-        <option value="both">Both</option>
-      </Select>
-      <Input label="Discount Amount" type="number" {...register('discount', { valueAsNumber: true })} />
-    </div>
-  );
+    const handleShopAddressSuggestion = (suggestion: any) => {
+        // Parse the suggestion and populate address fields
+        const parts = (suggestion.place_name || suggestion.text).split(',').map((p: string) => p.trim());
+
+        setValue('shopAddress.street', parts[0] || '');
+        if (parts.length > 1) setValue('shopAddress.city', parts[1]);
+        if (parts.length > 2) setValue('shopAddress.state', parts[2]);
+        if (parts.length > 3) setValue('shopAddress.country', parts[3]);
+
+        // Set coordinates from suggestion
+        if (suggestion.geometry?.coordinates) {
+            const [lng, lat] = suggestion.geometry.coordinates;
+            setValue('shopAddress.longitude', lng);
+            setValue('shopAddress.latitude', lat);
+        }
+    };
+
+    return (
+        <div className="space-y-4 relative ">
+            <div>
+                <Input
+                    label="Store Name *"
+                    {...register('storeName', {required: 'Store name is required'})}
+                    aria-invalid={errors.storeName ? 'true' : 'false'}
+                />
+                {errors.storeName && <p className="text-red-500 text-xs mt-1">{(errors.storeName as any).message}</p>}
+            </div>
+
+            <Input label="Store Email Address" type="email" {...register('storeEmail')} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Primary Phone" {...register('storePrimaryPhone')} />
+                <Input label="Secondary Phone" {...register('storeSecondaryPhone')} />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Sales Type *</label>
+                    <select
+                        {...register('saleType', {required: 'Sales type is required'})}
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                        <option value="">Select sales type...</option>
+                        <option value="retail">Retail</option>
+                        <option value="wholesale">Wholesale</option>
+                        <option value="both">Both</option>
+                    </select>
+                    {(errors.saleType as any)?.message && (
+                        <p className="text-red-500 text-xs mt-1">{(errors.saleType as any).message}</p>
+                    )}
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Store Category *</label>
+                    <select
+                        {...register('category', {required: 'Category is required'})}
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                        <option value="">Select category...</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="food">Food</option>
+                        <option value="groceries">Groceries</option>
+                        <option value="pharmacy">Pharmacy</option>
+                        <option value="home">Home</option>
+                        <option value="beauty">Beauty</option>
+                        <option value="books">Books</option>
+                        <option value="sports">Sports</option>
+                        <option value="furniture">Furniture</option>
+                    </select>
+                    {(errors.category as any)?.message && (
+                        <p className="text-red-500 text-xs mt-1">{(errors.category as any).message}</p>
+                    )}
+                </div>
+            </div>
+
+            <h3 className="text-md font-semibold text-gray-800 pt-2 border-t mt-6">Shop Address</h3>
+
+            {/* Address Autocomplete with Generate Button */}
+            <AddressAutocomplete
+                placeholder="Search address"
+                value={shopAddressQuery}
+                onChange={setShopAddressQuery}
+                onSelectSuggestion={handleShopAddressSuggestion}
+                onGenerateLocation={handleGetShopLocation}
+                isGenerating={geoLoading}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                    label="Street *"
+                    {...register('shopAddress.street', {required: 'Street is required'})}
+                    aria-invalid={(errors.shopAddress as any)?.street ? 'true' : 'false'}
+                />
+                <Input
+                    label="City *"
+                    {...register('shopAddress.city', {required: 'City is required'})}
+                    aria-invalid={(errors.shopAddress as any)?.city ? 'true' : 'false'}
+                />
+                <Input
+                    label="State *"
+                    {...register('shopAddress.state', {required: 'State is required'})}
+                    aria-invalid={(errors.shopAddress as any)?.state ? 'true' : 'false'}
+                />
+                <Input
+                    label="Country *"
+                    {...register('shopAddress.country', {required: 'Country is required'})}
+                    aria-invalid={(errors.shopAddress as any)?.country ? 'true' : 'false'}
+                />
+                <Input
+                    label="Postal Code *"
+                    {...register('shopAddress.postalCode', {required: 'Postal code is required'})}
+                    aria-invalid={(errors.shopAddress as any)?.postalCode ? 'true' : 'false'}
+                />
+                <Input
+                    label="Latitude"
+                    type="number"
+                    step="any"
+                    {...register('shopAddress.latitude', {valueAsNumber: true})}
+                />
+                <Input
+                    label="Longitude"
+                    type="number"
+                    step="any"
+                    {...register('shopAddress.longitude', {valueAsNumber: true})}
+                />
+            </div>
+            {errors.shopAddress && <p className="text-red-500 text-xs mt-1">Please fill all required address fields</p>}
+
+            {shopGeoMessage && (
+                <p className={`text-xs text-center ${geoError ? 'text-red-500' : 'text-green-600'}`}>
+                    {shopGeoMessage}
+                </p>
+            )}
+        </div>
+    );
 };
 
 // --- OwnerInfoStep ---
 export const OwnerInfoStep = () => {
-  const { register } = useFormContext();
+    const {register, formState: {errors}, setValue} = useFormContext();
+    const [ownerAddressQuery, setOwnerAddressQuery] = useState('');
 
-  return (
-    <div className="space-y-4">
-      <Input label="Owner Name" {...register('owner.name')} />
-      <Input label="Owner Email Address" type="email" {...register('owner.email')} />
+    const handleOwnerAddressSuggestion = (suggestion: any) => {
+        // Parse the suggestion and populate address fields
+        const parts = (suggestion.place_name || suggestion.text).split(',').map((p: string) => p.trim());
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input label="Owner's Primary Phone" {...register('owner.primaryPhone')} />
-        <Input label="Owner's Secondary Phone" {...register('owner.secondaryPhone')} />
-      </div>
+        setValue('ownerAddress.street', parts[0] || '');
+        if (parts.length > 1) setValue('ownerAddress.city', parts[1]);
+        if (parts.length > 2) setValue('ownerAddress.state', parts[2]);
+        if (parts.length > 3) setValue('ownerAddress.country', parts[3]);
+    };
 
-      <h3 className="text-md font-semibold text-gray-800 pt-2 border-t mt-6">Owner Address</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input label="Street" {...register('owner.address.street')} />
-        <Input label="City" {...register('owner.address.city')} />
-        <Input label="State" {...register('owner.address.state')} />
-      </div>
+    return (
+        <div className="space-y-4">
+            <div>
+                <Input
+                    label="Owner Name *"
+                    {...register('ownerName', {required: 'Owner name is required'})}
+                    aria-invalid={errors.ownerName ? 'true' : 'false'}
+                />
+                {errors.ownerName && <p className="text-red-500 text-xs mt-1">{(errors.ownerName as any).message}</p>}
+            </div>
 
-      <Input label="Owner Discount" type="number" {...register('owner.discount', { valueAsNumber: true })} />
-      <Input label="Business Bank Account Number" {...register('owner.bankAccountNumber')} />
-    </div>
-  );
+            <Input label="Owner Email Address" type="email" {...register('ownerEmail')} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Owner's Primary Phone" {...register('ownerPrimaryPhone')} />
+                <Input label="Owner's Secondary Phone" {...register('ownerSecondaryPhone')} />
+            </div>
+
+            <h3 className="text-md font-semibold text-gray-800 pt-2 border-t mt-6">Owner Address</h3>
+
+            {/* Address Autocomplete */}
+            <AddressAutocomplete
+                label="Search Address"
+                placeholder="Type to search for address..."
+                value={ownerAddressQuery}
+                onChange={setOwnerAddressQuery}
+                onSelectSuggestion={handleOwnerAddressSuggestion}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                    label="Street"
+                    {...register('ownerAddress.street')}
+                />
+                <Input
+                    label="City"
+                    {...register('ownerAddress.city')}
+                />
+                <Input
+                    label="State"
+                    {...register('ownerAddress.state')}
+                />
+                <Input
+                    label="Country"
+                    {...register('ownerAddress.country')}
+                />
+            </div>
+        </div>
+    );
 };
 
 // --- CertificationStep ---
 export const CertificationStep = () => {
-  const { register } = useFormContext();
+    const {register} = useFormContext();
 
-  return (
-    <div className="space-y-6">
-      <Input label="Official Business Name" {...register('certification.businessName')} />
-      <Input label="CAC Number" {...register('certification.cacNumber')} />
+    return (
+        <div className="space-y-6">
+            <Input label="Official Business Name" {...register('officialBusinessName')} />
+            <Input label="CAC Number" {...register('cacNumber')} />
 
-      <FileUpload label="Certificate of Incorporation" {...register('certification.incorporationCertificate')} />
-      <FileUpload label="Status Report" {...register('certification.statusReport')} />
-    </div>
-  );
+            <FileUpload label="CAC Document" {...register('cacDocFile')} />
+        </div>
+    );
 };
 
 // --- GalleryStep ---
 export const GalleryStep = () => {
-  const { register } = useFormContext();
+    const {register} = useFormContext();
 
-  return (
-    <div className="space-y-6">
-      <FileUpload label="Shop Photos and Videos" {...register('gallery.files')} multiple />
-    </div>
-  );
+    return (
+        <div className="space-y-6">
+            <FileUpload label="Shop Photos and Videos" {...register('gallery')} multiple/>
+        </div>
+    );
 };

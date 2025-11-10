@@ -1,22 +1,33 @@
 import React from 'react';
 import {Store} from '@/types/Store';
 import {ColumnDefinition, ListView} from '@/components/ui/ListView'
-import {Vendor} from "@/redux/vendorSlice";
+import {Vendor, Address} from "@/redux/vendorSlice";
 
 interface TableStoreListProps {
     stores: Store[] | Vendor[];
 }
 
-const storeColumns: ColumnDefinition<Store>[] = [
+// Helper function to safely access properties from Store or Vendor
+const isVendor = (store: unknown): store is Vendor => {
+    return typeof store === 'object' && store !== null && 'ownerName' in store;
+};
+
+const storeColumns: ColumnDefinition<any>[] = [
     {
         key: 'name',
         header: 'Store Name',
-        render: (store) => <span className="font-medium text-gray-800">{store.name}</span>,
+        render: (store) => {
+            const name = isVendor(store) ? store.shopName : (store as Store).name;
+            return <span className="font-medium text-gray-800">{name}</span>;
+        },
     },
     {
         key: 'owner',
         header: 'Owner',
-        render: (store) => <span className="text-gray-700">{store.owner.name}</span>,
+        render: (store) => {
+            const ownerName = isVendor(store) ? store.ownerName : (store as Store).owner?.name;
+            return <span className="text-gray-700">{ownerName || "N/A"}</span>;
+        },
     },
     {
         key: 'category',
@@ -26,7 +37,21 @@ const storeColumns: ColumnDefinition<Store>[] = [
     {
         key: 'address',
         header: 'Location',
-        render: (store) => <span className="text-gray-500">{store.address.city}, {store.address.state}</span>,
+        render: (store) => {
+            let city = 'N/A';
+            let state = 'N/A';
+            
+            if (isVendor(store)) {
+                const addr = typeof store.shopAddress === 'object' ? store.shopAddress : null;
+                city = addr?.city || 'N/A';
+                state = addr?.state || 'N/A';
+            } else {
+                city = (store as Store).address?.city || 'N/A';
+                state = (store as Store).address?.state || 'N/A';
+            }
+            
+            return <span className="text-gray-500">{city}, {state}</span>;
+        },
     },
     {
         key: 'status',

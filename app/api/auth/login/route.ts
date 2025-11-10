@@ -49,8 +49,14 @@ export async function POST(req: NextRequest) {
         );
     } catch (error) {
         console.error('Login error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        
+        // Return more detailed error in development for debugging
         return NextResponse.json(
-            {error: 'Internal server error'},
+            {
+                error: 'Internal server error',
+                details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+            },
             {status: 500}
         );
     }

@@ -7,8 +7,6 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-
 export function generateOTP(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -26,11 +24,21 @@ export async function comparePassword(password: string, hash: string): Promise<b
 }
 
 export function generateToken(userId: string): string {
+    const JWT_SECRET = process.env.JWT_SECRET;
+    
+    if (!JWT_SECRET || JWT_SECRET.trim() === '') {
+        throw new Error('JWT_SECRET is not configured in environment variables');
+    }
+    
     return jwt.sign({userId}, JWT_SECRET, {expiresIn: '7d'});
 }
 
 export function verifyToken(token: string): any {
     try {
+        const JWT_SECRET = process.env.JWT_SECRET;
+        if (!JWT_SECRET) {
+            throw new Error('JWT_SECRET is not configured');
+        }
         return jwt.verify(token, JWT_SECRET);
     } catch {
         return null;

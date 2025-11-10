@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '@/types/product';
-import { orders } from '@/data/orders';
-import { stores } from '@/data/stores';
+import { orders } from '@/data/Orders';
+import { stores } from '@/data/Stores';
 import { Tag, Package, DollarSign, ShoppingCart, BarChart, User, Calendar, Star, MessageSquare, Building } from 'lucide-react';
 
 interface ProductDetailProps {
@@ -102,7 +102,7 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
                   <Building className="w-5 h-5 text-gray-400" />
                   <div>
                     <p className="font-semibold">{store.name}</p>
-                    <p className="text-gray-500">{store.address.street}, {store.address.city}</p>
+                    <p className="text-gray-500">{store.address?.street || ''}, {store.address?.city || ''}</p>
                   </div>
                 </div>
               )) : <p className="text-sm text-gray-500">Not currently sold in any tracked stores.</p>}

@@ -10,7 +10,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/Dialog"
 import {Input} from "@/components/ui/Input"
-import {Label} from "@/components/ui/Label"
+import {Label} from "@/components/ui/label"
 
 export function DialogDemo() {
     return (

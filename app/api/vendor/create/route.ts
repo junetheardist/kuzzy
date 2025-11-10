@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
             shopSecondaryPhoneNumber,
             saleType,
             discount,
+            category,
             // Owner details
             ownerName,
             ownerAddress,
@@ -97,6 +98,7 @@ export async function POST(req: NextRequest) {
                 shopSecondaryPhoneNumber,
                 saleType,
                 discount,
+                category,
                 ownerName,
                 ownerAddress,
                 ownerEmail,
@@ -121,8 +123,18 @@ export async function POST(req: NextRequest) {
         );
     } catch (error) {
         console.error('Vendor creation error:', error);
+        
+        // Enhanced error messages for debugging
+        let errorMessage = 'Internal server error';
+        
+        if (error instanceof Error) {
+            errorMessage = error.message;
+        } else if (typeof error === 'object' && error !== null && 'message' in error) {
+            errorMessage = (error as any).message;
+        }
+        
         return NextResponse.json(
-            {error: 'Internal server error'},
+            {error: errorMessage},
             {status: 500}
         );
     }

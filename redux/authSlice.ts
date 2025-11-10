@@ -177,9 +177,16 @@ const authSlice = createSlice({
             state.token = null;
             state.user = null;
             state.isVerified = false;
+            state.userId = null;
         },
         setEmail: (state, action: PayloadAction<string>) => {
             state.email = action.payload; // ✅ update email
+        },
+        restoreFromCookies: (state, action: PayloadAction<{userId: string; token: string; user: {id: string; email: string}; isVerified: boolean}>) => {
+            state.userId = action.payload.userId;
+            state.token = action.payload.token;
+            state.user = action.payload.user;
+            state.isVerified = action.payload.isVerified;
         },
     },
     extraReducers: (builder) => {
@@ -209,6 +216,8 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.message = action.payload.message;
                 state.token = action.payload.token;
+                state.user = action.payload.user;
+                state.userId = action.payload.user?.id; // ✅ SET userId
                 state.isVerified = true;
             })
             .addCase(verifyOtp.rejected, handleRejected)
@@ -228,6 +237,7 @@ const authSlice = createSlice({
                 state.message = action.payload.message;
                 state.token = action.payload.token;
                 state.user = action.payload.user;
+                state.userId = action.payload.user?.id; // ✅ SET userId FROM user.id
                 state.isVerified = true;
             })
             .addCase(loginUser.rejected, handleRejected)
@@ -250,5 +260,5 @@ const authSlice = createSlice({
     },
 });
 
-export const {resetAuthState, logoutUser, setEmail} = authSlice.actions;
+export const {resetAuthState, logoutUser, setEmail, restoreFromCookies} = authSlice.actions;
 export default authSlice.reducer;

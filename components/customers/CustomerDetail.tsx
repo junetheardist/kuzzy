@@ -1,6 +1,6 @@
 import React from 'react';
 import { User as Customer } from '@/types/user';
-import { orders } from '@/data/orders';
+import { orders } from '@/data/Orders';
 import { Mail, Phone, MapPin, Calendar, ShoppingCart, DollarSign } from 'lucide-react';
 
 interface CustomerDetailProps {

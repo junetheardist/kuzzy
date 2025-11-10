@@ -1,39 +1,105 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
+import React, {useState} from 'react';
+import {useFormContext} from 'react-hook-form';
+import {Input} from '@/components/ui/Input';
+import {Select} from '@/components/ui/Select';
+import {useGeolocation} from '@/hooks/useGeolocation';
 
 export const StoreInfoStep = () => {
-  const { register, formState: { errors } } = useFormContext();
+    const {register, formState: {errors}, setValue} = useFormContext();
+    const {loading, error: geoError, getLocation} = useGeolocation();
+    const [geolocationMessage, setGeolocationMessage] = useState<string | null>(null);
 
-  return (
-    <div className="space-y-4">
-      <Input
-        label="Store Name"
-        {...register('storeName', { required: 'Store name is required' })}
-      />
-      {errors.storeName && <p className="text-red-500 text-xs">{(errors.storeName as any).message}</p>}
+    const handleGetCurrentLocation = async () => {
+        setGeolocationMessage(null);
+        const addressData = await getLocation();
 
-      <Input label="Store Email Address" type="email" {...register('storeEmail')} />
+        if (addressData) {
+            // Populate all address fields
+            setValue('address.street', addressData.street);
+            setValue('address.city', addressData.city);
+            setValue('address.state', addressData.state);
+            setValue('address.country', addressData.country);
+            setValue('address.postalCode', addressData.postalCode);
+            setValue('address.latitude', addressData.latitude);
+            setValue('address.longitude', addressData.longitude);
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input label="Primary Phone" {...register('storePrimaryPhone')} />
-        <Input label="Secondary Phone" {...register('storeSecondaryPhone')} />
-      </div>
+            setGeolocationMessage(`✅ Location set: ${addressData.street}, ${addressData.city}`);
 
-      <h3 className="text-md font-semibold text-gray-800 pt-2 border-t mt-6">Address</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input label="Street" {...register('address.street', { required: true })} />
-        <Input label="City" {...register('address.city', { required: true })} />
-        <Input label="State" {...register('address.state', { required: true })} />
-      </div>
+            // Clear message after 3 seconds
+            setTimeout(() => setGeolocationMessage(null), 3000);
+        } else if (geoError) {
+            setGeolocationMessage(`❌ ${geoError}`);
+        }
+    };
 
-      <Select label="Sales Type" {...register('salesType')}>
-        <option value="retail">Retail</option>
-        <option value="wholesale">Wholesale</option>
-        <option value="both">Both</option>
-      </Select>
-      <Input label="Discount Amount" type="number" {...register('discount', { valueAsNumber: true })} />
-    </div>
-  );
+    return (
+        <div className="space-y-4">
+            <Input
+                label="Store Name"
+                {...register('storeName', {required: 'Store name is required'})}
+            />
+            {errors.storeName && <p className="text-red-500 text-xs">{(errors.storeName as any).message}</p>}
+
+            <Input label="Store Email Address" type="email" {...register('storeEmail')} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Primary Phone" {...register('storePrimaryPhone')} />
+                <Input label="Secondary Phone" {...register('storeSecondaryPhone')} />
+            </div>
+
+            <h3 className="text-md font-semibold text-gray-800 pt-2 border-t mt-6">Address</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input label="Street *" {...register('address.street', {required: 'Street is required'})} />
+                <Input label="City *" {...register('address.city', {required: 'City is required'})} />
+                <Input label="State *" {...register('address.state', {required: 'State is required'})} />
+                <Input label="Country *" {...register('address.country', {required: 'Country is required'})} />
+                <Input
+                    label="Postal Code *" {...register('address.postalCode', {required: 'Postal code is required'})} />
+                <Input label="Latitude" type="number"
+                       step="any" {...register('address.latitude', {valueAsNumber: true})} />
+                <Input label="Longitude" type="number"
+                       step="any" {...register('address.longitude', {valueAsNumber: true})} />
+            </div>
+
+            <div className="space-y-2">
+                <button
+                    type="button"
+                    onClick={handleGetCurrentLocation}
+                    disabled={loading}
+                    className="w-full px-4 py-2 bg-gray-100 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-colors font-medium"
+                >
+                    {loading ? 'Getting Location...' : '📍 Use Current Location'}
+                </button>
+                {geolocationMessage && (
+                    <p className={`text-xs text-center ${geoError ? 'text-red-500' : 'text-green-600'}`}>
+                        {geolocationMessage}
+                    </p>
+                )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Select label="Sales Type" {...register('salesType')}>
+                    <option value="">Select Sales Type</option>
+                    <option value="retail">Retail</option>
+                    <option value="wholesale">Wholesale</option>
+                    <option value="both">Both</option>
+                </Select>
+                <Select label="Store Category *" {...register('category', {required: 'Category is required'})}>
+                    <option value="">Select Category</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="food">Food</option>
+                    <option value="groceries">Groceries</option>
+                    <option value="pharmacy">Pharmacy</option>
+                    <option value="home">Home</option>
+                    <option value="beauty">Beauty</option>
+                    <option value="books">Books</option>
+                    <option value="sports">Sports</option>
+                    <option value="furniture">Furniture</option>
+                </Select>
+            </div>
+            {errors.category && <p className="text-red-500 text-xs">{(errors.category as any).message}</p>}
+            <Input label="Discount Amount" type="number" {...register('discount', {valueAsNumber: true})} />
+        </div>
+    );
 };

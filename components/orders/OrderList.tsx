@@ -1,7 +1,7 @@
 // src/components/orders/OrderList.tsx
 import React from "react";
 import { Order } from "@/types/order";
-import { OrderCard, CompactOrderCard } from "./OrderCard";
+import { OrderCard, CompactOrderCard } from "@/components/orders/OrderCard";
 
 interface OrderListProps {
   orders: Order[];
