@@ -15,7 +15,6 @@ export const products: Product[] = [
       otherImagesUrl: [
         "https://i.pinimg.com/564x/e0/be/99/e0be9963a84343315a8fbde53380340d.jpg",
         "https://i.pinimg.com/564x/f3/35/2c/f3352c73913512b5a6d5b589355a2f8a.jpg",
-        "https://i.pinimg.com/564x/c9/1d/9b/c91d9b355393655a5028424749323533.jpg"
       ]
     },
     feedback: [
