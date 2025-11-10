@@ -1,4 +1,4 @@
-import {Button} from "@/components/ui/Button"
+
 import {
     Dialog,
     DialogClose,
@@ -10,7 +10,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/Dialog"
 import {Input} from "@/components/ui/Input"
-import {Label} from "@/components/ui/label"
+import {Label} from "@/components/ui/Label"
+import { Button } from "../ui/Button"
 
 export function DialogDemo() {
     return (

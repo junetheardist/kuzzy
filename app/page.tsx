@@ -3,16 +3,16 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {CompactOrderList, TableOrderList as PreviewTableOrderList} from "@/components/orders/OrderList";
 import {CompactStoreList} from "@/components/stores/StoreList";
 import {RegionFilterView} from '@/components/Regions/RegionFilterView';
-import {regions} from '@/data/regions';
-import {orders} from '@/data/orders';
+import {regions} from '@/data/Regions';
+import {orders} from '@/data/Orders';
 import {OrderDetail} from '@/components/orders/OrderDetail';
 import {Order} from '@/types/order';
 import {Modal} from '@/components/ui/Modal';
 import {AnimatePresence, motion} from 'framer-motion';
 import {Plus, X} from 'lucide-react';
 import {TableStoreList} from '@/components/stores/StoreListView';
-import {products} from '@/data/products';
-import {customers} from '@/data/customers'; // Import the new customer data
+import {products} from '@/data/Products';
+import {customers} from '@/data/Customers'; // Import the new customer data
 import {TableProductList} from '@/components/products/TableProductList';
 import {TableCustomerList} from '@/components/customers/TableCustomerList';
 import GoogleMapView from "@/components/dashboard/GoogleMapView";
@@ -53,7 +53,7 @@ export default function Home() {
         const regionName = data?.name || '';
 
         // Determine the list of states to filter by.
-        const isTopLevelRegion = regions.some(r => r.id === data.id);
+        const isTopLevelRegion = regions.some(r => r._id === data.id);
         const statesToFilter = isTopLevelRegion ? data.sublocationNames : [data.name];
 
         switch (type) {

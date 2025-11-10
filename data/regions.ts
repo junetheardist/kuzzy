@@ -9,7 +9,7 @@ const lagosLGAs = ["Ikeja", "Eti-Osa", "Surulere", "Alimosho"];
 
 export const regions: Region[] = [
   {
-    id: "REG-SS",
+    _id: "REG-SS",
     name: "South-South",
     sublocationNames: [
       "Rivers",
@@ -25,7 +25,7 @@ export const regions: Region[] = [
     customerCount: getCustomerCount(southSouthStates),
   },
   {
-    id: "REG-SW",
+    _id: "REG-SW",
     name: "South-West",
     sublocationNames: ["Lagos", "Ogun", "Oyo", "Osun", "Ondo", "Ekiti"],
     storeCount: getStoreCount(southWestStates),
@@ -37,7 +37,7 @@ export const regions: Region[] = [
 
 export const states: State[] = [
   {
-    id: "STA-RV",
+    _id: "STA-RV",
     name: "Rivers",
     regionId: "REG-SS",
     sublocationNames: riversLGAs,
@@ -47,7 +47,7 @@ export const states: State[] = [
     customerCount: getCustomerCount(["Rivers"]),
   },
   {
-    id: "STA-LA",
+    _id: "STA-LA",
     name: "Lagos",
     regionId: "REG-SW",
     sublocationNames: lagosLGAs,
@@ -60,7 +60,7 @@ export const states: State[] = [
 
 export const lgas: LGA[] = [
   {
-    id: "LGA-PH",
+    _id: "LGA-PH",
     name: "Port Harcourt",
     stateId: "STA-RV",
     sublocationNames: ["Old GRA", "New GRA", "D-Line", "Diobu"],
@@ -70,7 +70,7 @@ export const lgas: LGA[] = [
     customerCount: getCustomerCount(["Rivers"]),
   },
   {
-    id: "LGA-ETI",
+    _id: "LGA-ETI",
     name: "Eti-Osa",
     stateId: "STA-LA",
     sublocationNames: ["Lekki Phase 1", "Victoria Island", "Ikoyi"],
@@ -80,7 +80,7 @@ export const lgas: LGA[] = [
     customerCount: getCustomerCount(["Lagos"]),
   },
   {
-    id: "LGA-IKE",
+    _id: "LGA-IKE",
     name: "Ikeja",
     stateId: "STA-LA",
     sublocationNames: ["Ikeja GRA", "Opebi", "Allen Avenue"],
@@ -93,7 +93,7 @@ export const lgas: LGA[] = [
 
 export const communities: Community[] = [
   {
-    id: "COM-PHGRA",
+    _id: "COM-PHGRA",
     name: "Old GRA",
     lgaId: "LGA-PH",
     sublocationNames: ["Olu Obasanjo Road", "Tombia Street", "Forces Avenue"],
@@ -103,7 +103,7 @@ export const communities: Community[] = [
     customerCount: getCustomerCount(["Rivers"]),
   },
   {
-    id: "COM-LEKKI1",
+    _id: "COM-LEKKI1",
     name: "Lekki Phase 1",
     lgaId: "LGA-ETI",
     sublocationNames: ["Admiralty Way", "Fola Osibo Road", "Omorinre Johnson Street"],
@@ -113,7 +113,7 @@ export const communities: Community[] = [
     customerCount: getCustomerCount(["Lagos"]),
   },
   {
-    id: "COM-IKEGRA",
+    _id: "COM-IKEGRA",
     name: "Ikeja GRA",
     lgaId: "LGA-IKE",
     sublocationNames: ["Isaac John Street", "Oduduwa Crescent", "Joel Ogunnaike Street"],
@@ -126,7 +126,7 @@ export const communities: Community[] = [
 
 export const streets: Street[] = [
   {
-    id: "STR-OLU",
+    _id: "STR-OLU",
     name: "Olu Obasanjo Road",
     communityId: "COM-PHGRA",
     sublocationNames: [],
@@ -136,7 +136,7 @@ export const streets: Street[] = [
     customerCount: 20,
   },
   {
-    id: "STR-FOLA",
+    _id: "STR-FOLA",
     name: "Fola Osibo Road",
     communityId: "COM-LEKKI1",
     sublocationNames: [],

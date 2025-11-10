@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useFormContext} from 'react-hook-form';
-import {Input} from '@/components/ui/input';
+import {Input} from '@/components/ui/Input';
 import {AddressAutocomplete} from '@/components/Forms/AddressAutocomplete';
 import {FileUpload} from '@/components/Forms/FileUpload';
 import {useGeolocation} from '@/hooks/useGeolocation';
