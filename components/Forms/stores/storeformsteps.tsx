@@ -5,6 +5,13 @@ import {AddressAutocomplete} from '@/components/Forms/AddressAutocomplete';
 import {FileUpload} from '@/components/Forms/FileUpload';
 import {useGeolocation} from '@/hooks/useGeolocation';
 
+interface StateRegionItem {
+    name?: string;
+    region?: string | { name?: string };
+}
+
+const normalizeStateName = (value: string = '') => value.trim().toLowerCase().replace(/\s*state$/, '');
+
 // --- StoreInfoStep ---
 export const StoreInfoStep = () => {
     const {register, formState: {errors}, setValue, watch} = useFormContext();
@@ -13,8 +20,6 @@ export const StoreInfoStep = () => {
     const [shopAddressQuery, setShopAddressQuery] = useState('');
     const [stateToRegion, setStateToRegion] = useState<Record<string, string>>({});
     const selectedState = watch('shopAddress.state');
-
-    const normalizeStateName = (value: string = '') => value.trim().toLowerCase().replace(/\s*state$/, '');
 
     useEffect(() => {
         const fetchStates = async () => {
@@ -26,7 +31,7 @@ export const StoreInfoStep = () => {
                 const states = Array.isArray(result?.data) ? result.data : [];
                 const mapped: Record<string, string> = {};
 
-                states.forEach((state: any) => {
+                states.forEach((state: StateRegionItem) => {
                     const stateName = state?.name;
                     const regionName = typeof state?.region === 'string'
                         ? state.region
@@ -38,8 +43,8 @@ export const StoreInfoStep = () => {
                 });
 
                 setStateToRegion(mapped);
-            } catch {
-                // ignore lookup failures and keep manual state input working
+            } catch (error) {
+                console.warn('Failed to load states for region lookup', error);
             }
         };
 
@@ -52,7 +57,7 @@ export const StoreInfoStep = () => {
             return;
         }
 
-        const matchedRegion = stateToRegion[normalizeStateName(selectedState)];
+        const matchedRegion = stateToRegion[normalizeStateName(selectedState)] || '';
         if (matchedRegion) {
             setValue('shopAddress.region', matchedRegion);
         }
@@ -67,7 +72,6 @@ export const StoreInfoStep = () => {
             setValue('shopAddress.street', addressData.street);
             setValue('shopAddress.city', addressData.city);
             setValue('shopAddress.state', addressData.state);
-            setValue('shopAddress.region', stateToRegion[normalizeStateName(addressData.state)] || '');
             setValue('shopAddress.country', addressData.country);
             setValue('shopAddress.postalCode', addressData.postalCode);
             setValue('shopAddress.latitude', addressData.latitude);
@@ -89,10 +93,6 @@ export const StoreInfoStep = () => {
         setValue('shopAddress.street', parts[0] || '');
         if (parts.length > 1) setValue('shopAddress.city', parts[1]);
         if (parts.length > 2) setValue('shopAddress.state', parts[2]);
-        if (parts.length > 2) {
-            const matchedRegion = stateToRegion[normalizeStateName(parts[2])];
-            setValue('shopAddress.region', matchedRegion || '');
-        }
         if (parts.length > 3) setValue('shopAddress.country', parts[3]);
 
         // Set coordinates from suggestion
