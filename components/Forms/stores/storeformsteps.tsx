@@ -1,9 +1,16 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
 import {Input} from '@/components/ui/Input';
 import {AddressAutocomplete} from '@/components/Forms/AddressAutocomplete';
 import {FileUpload} from '@/components/Forms/FileUpload';
 import {useGeolocation} from '@/hooks/useGeolocation';
+
+interface StateRegionItem {
+    name?: string;
+    region?: string | { name?: string };
+}
+
+const normalizeStateName = (value: string = '') => value.trim().toLowerCase().replace(/\s*state$/i, '');
 
 // --- StoreInfoStep ---
 export const StoreInfoStep = () => {
@@ -11,6 +18,48 @@ export const StoreInfoStep = () => {
     const {loading: geoLoading, error: geoError, getLocation} = useGeolocation();
     const [shopGeoMessage, setShopGeoMessage] = useState<string | null>(null);
     const [shopAddressQuery, setShopAddressQuery] = useState('');
+    const [stateToRegion, setStateToRegion] = useState<Record<string, string>>({});
+    const selectedState = watch('shopAddress.state');
+
+    useEffect(() => {
+        const fetchStates = async () => {
+            try {
+                const response = await fetch('/api/states');
+                if (!response.ok) return;
+
+                const result = await response.json();
+                const states = Array.isArray(result?.data) ? result.data : [];
+                const mapped: Record<string, string> = {};
+
+                states.forEach((state: StateRegionItem) => {
+                    const stateName = state?.name;
+                    const regionName = typeof state?.region === 'string'
+                        ? state.region
+                        : state?.region?.name;
+
+                    if (stateName && regionName) {
+                        mapped[normalizeStateName(stateName)] = regionName;
+                    }
+                });
+
+                setStateToRegion(mapped);
+            } catch (error) {
+                console.warn('Failed to load states for region lookup', error);
+            }
+        };
+
+        fetchStates();
+    }, []);
+
+    useEffect(() => {
+        if (!selectedState) {
+            setValue('shopAddress.region', '');
+            return;
+        }
+
+        const matchedRegion = stateToRegion[normalizeStateName(selectedState)] || '';
+        setValue('shopAddress.region', matchedRegion);
+    }, [selectedState, setValue, stateToRegion]);
 
     const handleGetShopLocation = async () => {
         setShopGeoMessage(null);
@@ -124,6 +173,7 @@ export const StoreInfoStep = () => {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" {...register('shopAddress.region')} />
                 <Input
                     label="Street *"
                     {...register('shopAddress.street', {required: 'Street is required'})}
