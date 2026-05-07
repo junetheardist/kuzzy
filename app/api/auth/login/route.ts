@@ -7,16 +7,17 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
 
-        const {email, password} = await req.json();
+        const {email, phone, password} = await req.json();
 
-        if (!email || !password) {
+        if ((!email && !phone) || !password) {
             return NextResponse.json(
-                {error: 'Email and password are required'},
+                {error: 'Email or phone number, and password are required'},
                 {status: 400}
             );
         }
 
-        const user = await User.findOne({email});
+        const query = email ? {email} : {phone};
+        const user = await User.findOne(query);
 
         if (!user) {
             return NextResponse.json(
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
         const token = generateToken(user._id.toString());
 
         return NextResponse.json(
-            {message: 'Login successful', token, user: {id: user._id, email: user.email}},
+            {message: 'Login successful', token, user: {id: user._id, email: user.email, phone: user.phone, role: user.role}},
             {status: 200}
         );
     } catch (error) {

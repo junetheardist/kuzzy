@@ -45,8 +45,10 @@ const StoreSchema = new Schema({
 }, {_id: true});
 
 const UserSchema = new Schema({
-    email: {type: String, required: true, unique: true},
+    email: {type: String, unique: true, sparse: true},
+    phone: {type: String, unique: true, sparse: true},
     password: {type: String, required: true},
+    role: {type: String, enum: ['admin', 'vendor', 'user'], default: 'user'},
     isVerified: {type: Boolean, default: false},
     otp: {type: String},
     otpExpiry: {type: Date},

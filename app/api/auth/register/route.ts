@@ -8,36 +8,60 @@ export async function POST(req: NextRequest) {
     try {
         await dbConnect();
 
-        const {email, password} = await req.json();
+        const {email, phone, password} = await req.json();
 
-        if (!email || !password) {
+        if (!email && !phone) {
             return NextResponse.json(
-                {error: 'Email and password are required'},
+                {error: 'Email or phone number is required'},
                 {status: 400}
             );
         }
 
-        const existingUser = await User.findOne({email});
-        if (existingUser) {
+        if (!password) {
             return NextResponse.json(
-                {error: 'User already exists'},
+                {error: 'Password is required'},
                 {status: 400}
             );
+        }
+
+        if (email) {
+            const existingUser = await User.findOne({email});
+            if (existingUser) {
+                return NextResponse.json(
+                    {error: 'User already exists'},
+                    {status: 400}
+                );
+            }
+        }
+
+        if (phone) {
+            const existingUser = await User.findOne({phone});
+            if (existingUser) {
+                return NextResponse.json(
+                    {error: 'User with this phone number already exists'},
+                    {status: 400}
+                );
+            }
         }
 
         const hashedPassword = await hashPassword(password);
         const otp = generateOTP();
         const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-        const user = await User.create({
-            email,
+        const userData: any = {
             password: hashedPassword,
             otp,
             otpExpiry,
-            isVerified: false
-        });
+            isVerified: false,
+        };
+        if (email) userData.email = email;
+        if (phone) userData.phone = phone;
 
-        await sendOTPEmail(email, otp);
+        const user = await User.create(userData);
+
+        if (email) {
+            await sendOTPEmail(email, otp);
+        }
 
         return NextResponse.json(
             {message: 'Registration successful. Please check your email for OTP.', userId: user._id},
