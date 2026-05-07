@@ -72,8 +72,12 @@ export async function POST(req: NextRequest) {
             await sendOTPEmail(email, otp);
         }
 
+        const message = email
+            ? 'Registration successful. Please check your email for OTP.'
+            : 'Registration successful.';
+
         return NextResponse.json(
-            {message: 'Registration successful. Please check your email for OTP.', userId: user._id},
+            {message, userId: user._id},
             {status: 201}
         );
     } catch (error) {
