@@ -33,6 +33,15 @@ export function generateToken(userId: string): string {
     return jwt.sign({userId}, JWT_SECRET, {expiresIn: '7d'});
 }
 
+export function isValidEmail(email: string): boolean {
+    // Simple, linear-time email validation to avoid ReDoS
+    const atIndex = email.indexOf('@');
+    if (atIndex <= 0 || atIndex !== email.lastIndexOf('@')) return false;
+    const domain = email.slice(atIndex + 1);
+    const dotIndex = domain.lastIndexOf('.');
+    return dotIndex > 0 && dotIndex < domain.length - 1;
+}
+
 export function verifyToken(token: string): any {
     try {
         const JWT_SECRET = process.env.JWT_SECRET;

@@ -4,6 +4,15 @@ import {User} from '@/models/User';
 import {generateOTP, hashPassword} from '@/lib/utils';
 import {sendOTPEmail} from '@/lib/nodemailer';
 
+interface RegisterUserData {
+    password: string;
+    otp: string;
+    otpExpiry: Date;
+    isVerified: boolean;
+    email?: string;
+    phone?: string;
+}
+
 export async function POST(req: NextRequest) {
     try {
         await dbConnect();
@@ -48,7 +57,7 @@ export async function POST(req: NextRequest) {
         const otp = generateOTP();
         const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-        const userData: any = {
+        const userData: RegisterUserData = {
             password: hashedPassword,
             otp,
             otpExpiry,

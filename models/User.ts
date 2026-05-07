@@ -85,4 +85,12 @@ const UserSchema = new Schema({
     ]
 });
 
+UserSchema.pre('validate', function (next) {
+    if (!this.email && !this.phone) {
+        next(new Error('Either email or phone number is required'));
+    } else {
+        next();
+    }
+});
+
 export const User = models.User || mongoose.model('User', UserSchema);

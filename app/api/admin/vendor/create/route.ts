@@ -1,7 +1,34 @@
 import {NextRequest, NextResponse} from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import {User} from '@/models/User';
-import {hashPassword, verifyToken} from '@/lib/utils';
+import {hashPassword, verifyToken, isValidEmail} from '@/lib/utils';
+
+interface VendorUserData {
+    phone: string;
+    email?: string;
+    password: string;
+    role: 'vendor';
+    isVerified: boolean;
+    shopName: string;
+    shopAddress?: object;
+    shopEmail?: string;
+    shopPrimaryPhoneNumber?: string;
+    shopSecondaryPhoneNumber?: string;
+    saleType?: string;
+    discount?: string;
+    category?: string;
+    ownerName?: string;
+    ownerAddress?: object;
+    ownerEmail?: string;
+    ownerPrimaryPhoneNumber?: string;
+    ownerSecondaryPhoneNumber?: string;
+    ownerDiscount?: string;
+    businessAccountName?: string;
+    officialBusinessName?: string;
+    cacNumber?: string;
+    cacDocFile?: string;
+    gallery: string[];
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -129,7 +156,7 @@ export async function POST(req: NextRequest) {
         const hashedPassword = await hashPassword(password);
 
         // Build the new vendor user document
-        const newUserData: any = {
+        const newUserData: VendorUserData = {
             phone,
             password: hashedPassword,
             role: 'vendor',
@@ -189,9 +216,4 @@ export async function POST(req: NextRequest) {
             {status: 500}
         );
     }
-}
-
-function isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
 }
