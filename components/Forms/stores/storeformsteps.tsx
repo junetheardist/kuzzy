@@ -10,7 +10,7 @@ interface StateRegionItem {
     region?: string | { name?: string };
 }
 
-const normalizeStateName = (value: string = '') => value.trim().toLowerCase().replace(/\s*state$/, '');
+const normalizeStateName = (value: string = '') => value.trim().toLowerCase().replace(/\s*state$/i, '');
 
 // --- StoreInfoStep ---
 export const StoreInfoStep = () => {
@@ -58,9 +58,7 @@ export const StoreInfoStep = () => {
         }
 
         const matchedRegion = stateToRegion[normalizeStateName(selectedState)] || '';
-        if (matchedRegion) {
-            setValue('shopAddress.region', matchedRegion);
-        }
+        setValue('shopAddress.region', matchedRegion);
     }, [selectedState, setValue, stateToRegion]);
 
     const handleGetShopLocation = async () => {
