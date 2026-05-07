@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
 import {Input} from '@/components/ui/Input';
 import {AddressAutocomplete} from '@/components/Forms/AddressAutocomplete';
@@ -11,6 +11,52 @@ export const StoreInfoStep = () => {
     const {loading: geoLoading, error: geoError, getLocation} = useGeolocation();
     const [shopGeoMessage, setShopGeoMessage] = useState<string | null>(null);
     const [shopAddressQuery, setShopAddressQuery] = useState('');
+    const [stateToRegion, setStateToRegion] = useState<Record<string, string>>({});
+    const selectedState = watch('shopAddress.state');
+
+    const normalizeStateName = (value: string = '') => value.trim().toLowerCase().replace(/\s*state$/, '');
+
+    useEffect(() => {
+        const fetchStates = async () => {
+            try {
+                const response = await fetch('/api/states');
+                if (!response.ok) return;
+
+                const result = await response.json();
+                const states = Array.isArray(result?.data) ? result.data : [];
+                const mapped: Record<string, string> = {};
+
+                states.forEach((state: any) => {
+                    const stateName = state?.name;
+                    const regionName = typeof state?.region === 'string'
+                        ? state.region
+                        : state?.region?.name;
+
+                    if (stateName && regionName) {
+                        mapped[normalizeStateName(stateName)] = regionName;
+                    }
+                });
+
+                setStateToRegion(mapped);
+            } catch {
+                // ignore lookup failures and keep manual state input working
+            }
+        };
+
+        fetchStates();
+    }, []);
+
+    useEffect(() => {
+        if (!selectedState) {
+            setValue('shopAddress.region', '');
+            return;
+        }
+
+        const matchedRegion = stateToRegion[normalizeStateName(selectedState)];
+        if (matchedRegion) {
+            setValue('shopAddress.region', matchedRegion);
+        }
+    }, [selectedState, setValue, stateToRegion]);
 
     const handleGetShopLocation = async () => {
         setShopGeoMessage(null);
@@ -21,6 +67,7 @@ export const StoreInfoStep = () => {
             setValue('shopAddress.street', addressData.street);
             setValue('shopAddress.city', addressData.city);
             setValue('shopAddress.state', addressData.state);
+            setValue('shopAddress.region', stateToRegion[normalizeStateName(addressData.state)] || '');
             setValue('shopAddress.country', addressData.country);
             setValue('shopAddress.postalCode', addressData.postalCode);
             setValue('shopAddress.latitude', addressData.latitude);
@@ -42,6 +89,10 @@ export const StoreInfoStep = () => {
         setValue('shopAddress.street', parts[0] || '');
         if (parts.length > 1) setValue('shopAddress.city', parts[1]);
         if (parts.length > 2) setValue('shopAddress.state', parts[2]);
+        if (parts.length > 2) {
+            const matchedRegion = stateToRegion[normalizeStateName(parts[2])];
+            setValue('shopAddress.region', matchedRegion || '');
+        }
         if (parts.length > 3) setValue('shopAddress.country', parts[3]);
 
         // Set coordinates from suggestion
@@ -124,6 +175,7 @@ export const StoreInfoStep = () => {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" {...register('shopAddress.region')} />
                 <Input
                     label="Street *"
                     {...register('shopAddress.street', {required: 'Street is required'})}
